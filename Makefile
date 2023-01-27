@@ -1,11 +1,11 @@
 #==============================================================================
 #	Default Setting
 #==============================================================================
-NAME =
+NAME		= 	ft_containers
 
-SRC			=	\
+SRC			=	main.cpp \
 
-SRC_DIR		=	source/
+SRC_DIR		=
 OBJ_DIR		=	object/
 INC_DIR		=
 OBJ			=	$(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
@@ -53,6 +53,7 @@ $(OBJ)		:	| $(OBJ_DIR)
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.cpp $(INC_DIR);	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 #==============================================================================
-.PHONY		:	log sntz
+.PHONY		:	log sntz std
+std			:	; make re CXXFLAGS="$(CXXFLAGS) -D STD"
 log			:	; make re CXXFLAGS="$(CXXFLAGS) $(LOG)"
 sntz		:	; make re CXXFLAGS="$(CXXFLAGS) $(DEBUG) $(SNTZ)"

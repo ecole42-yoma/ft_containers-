@@ -1,0 +1,12 @@
+﻿---
+BasedOnStyle: Mozilla
+AccessModifierOffset: '0'
+AlignConsecutiveMacros: 'true'
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignEscapedNewlines: Left
+BreakBeforeBraces: Attach
+ColumnLimit: '120'
+IndentWidth: '4'
+
+...

@@ -13,17 +13,17 @@
 #pragma once
 
 #ifndef __VECTOR_HPP__
-# define __VECTOR_HPP__
+#define __VECTOR_HPP__
 
-# include <string>
+#include <string>
 
-namespace ft	{
+namespace ft
+{
 
-	class vector {
+class vector
+{
+};
 
-
-	};
-
-}; /* namespace ft */
+} /* namespace ft */
 
 #endif /* __VECTOR_HPP__ */

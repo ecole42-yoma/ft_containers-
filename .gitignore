@@ -1,2 +1,6 @@
 *.cache
 *.swp
+
+ft_containers
+
+object/*
