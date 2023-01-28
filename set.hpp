@@ -1,14 +1,13 @@
 
 /*
 [ member function table ]
-map
-~map
+set
+~set
 operator=
 begin
 end
 rbegin
 rend
-operator[]
 empty
 size
 max_size
@@ -24,7 +23,7 @@ equal_range
 key_comp
 value_comp
 get_allocator
--------------------------
+------------
 [ non member function ]
 operator==
 operator!=
@@ -33,5 +32,4 @@ operator<=
 operator>
 operator>=
 swap
-
 */
