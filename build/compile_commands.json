@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/goinfre/yongmkim/ft_containers/build",
-  "command": "/usr/bin/clang++   -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -mmacosx-version-min=10.15 -o CMakeFiles/ft_container_sonarlint.dir/main.cpp.o -c /goinfre/yongmkim/ft_containers/main.cpp",
-  "file": "/goinfre/yongmkim/ft_containers/main.cpp"
-}
-]

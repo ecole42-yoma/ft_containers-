@@ -3,4 +3,6 @@
 
 ft_containers
 
+build/*
+
 object/*
