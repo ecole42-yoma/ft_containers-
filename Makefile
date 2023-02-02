@@ -24,7 +24,7 @@ CXXFLAGS	+= -pedantic
 CXXFLAGS	+=	$(addprefix -std=, $(CXX_STD_FLAGS))
 
 
-DEBUG_FLAG	+=	DEBUG
+DEBUG_FLAG	+=	LOG
 
 ifdef DEBUG_FLAG
 	LOG	+=	$(addprefix -D , $(DEBUG_FLAG))
