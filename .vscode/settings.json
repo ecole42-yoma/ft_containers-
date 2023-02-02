@@ -1,3 +1,17 @@
 {
-	"sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+	"sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+	"workbench.colorCustomizations": {
+		"commandCenter.border": "#15202b99",
+		"statusBar.background": "#88e7c2",
+		"statusBar.foreground": "#15202b",
+		"statusBarItem.hoverBackground": "#5edeac",
+		"statusBarItem.remoteBackground": "#88e7c2",
+		"statusBarItem.remoteForeground": "#15202b",
+		"tab.activeBorder": "#b2f0d8",
+		"titleBar.activeBackground": "#88e7c2",
+		"titleBar.activeForeground": "#15202b",
+		"titleBar.inactiveBackground": "#88e7c299",
+		"titleBar.inactiveForeground": "#15202b99"
+	},
+	"peacock.color": "#88e7c2"
 }

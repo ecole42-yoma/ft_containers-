@@ -7,7 +7,7 @@ SRC			=	main.cpp \
 
 SRC_DIR		=
 OBJ_DIR		=	object/
-INC_DIR		=
+INC_DIR		=	include/
 OBJ			=	$(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 
 #==============================================================================
@@ -50,7 +50,7 @@ re			:
 $(NAME)		:	$(OBJ);	$(CXX) $(CXXFLAGS) $^ -o $@
 $(OBJ_DIR)	:	;	mkdir -p $(OBJ_DIR)
 $(OBJ)		:	| $(OBJ_DIR)
-$(OBJ_DIR)%.o:	$(SRC_DIR)%.cpp $(INC_DIR);	$(CXX) $(CXXFLAGS) -o $@ -c $<
+$(OBJ_DIR)%.o:	$(SRC_DIR)%.cpp $(INC_DIR);	$(CXX) $(CXXFLAGS) -I $(INC_DIR) -o $@ -c $<
 
 #==============================================================================
 .PHONY		:	log sntz std
