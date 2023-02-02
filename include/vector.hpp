@@ -114,8 +114,7 @@ class vector {
 	void resize(size_type sz, value_type c = value_type());
 
 	bool __invariants() const;
-};
-}
+}; /* class vector */
 
 /**
  * * [ non-member function overloads ] -------------------------------------------------------------
@@ -147,5 +146,13 @@ operator>=(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs)
 template< class T, class Alloc >
 void
 swap(ft::vector< T, Alloc >& lhs, ft::vector< T, Alloc >& rhs);
+
+} /* namespace ft */
+
+// namespace std {
+// template< class T, class Alloc >
+// void
+// swap(ft::vector< T, Alloc >& lhs, ft::vector< T, Alloc >& rhs);
+// }
 
 #endif /* __VECTOR_HPP__ */
