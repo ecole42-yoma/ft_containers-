@@ -2,7 +2,6 @@
 #ifndef __TYPE_TRAITS_HPP__
 #define __TYPE_TRAITS_HPP__
 
-// #include "is_integral.hpp"
 #ifdef TEST
 #include "./meta_function/enable_if.hpp"
 #include "./meta_function/integral_constant.hpp"
