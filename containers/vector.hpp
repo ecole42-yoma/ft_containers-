@@ -51,7 +51,7 @@ class vector {
 	/**
 	 * * [ allocator ] -----------------------------------------------------------------------------
 	 */
-	allocator_type get_allocator() const noexcept;
+	allocator_type get_allocator() const;
 
 	/**
 	 * * [ element access ] ------------------------------------------------------------------------

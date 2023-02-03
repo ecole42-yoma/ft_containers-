@@ -24,6 +24,9 @@ f(T i) {
 
 int
 main() {
+	int a;
+	int b;
+	std::pair< int, int >(a, b);
 	std::cout << std::boolalpha;
 	assert((ft::is_same< ft::is_integral_t< int >, ft::is_integral_t< int > >::value));
 	// assert((ft::is_same< ft::is_integral_t< int >, ft::is_integral_t< unsigned int > >::value));
