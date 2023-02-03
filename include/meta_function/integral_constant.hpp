@@ -7,28 +7,29 @@ namespace ft {
 // integral_constant
 template< typename _Tp, _Tp __v >
 struct integral_constant {
-	static const _Tp		  value = __v;
-	typedef _Tp				  value_type;
-	typedef integral_constant type;
-							  operator value_type() const { return value; }
-	const value_type		  operator()() const { return value; }
+	static const _Tp					  value = __v;
+	typedef _Tp							  value_type;
+	typedef integral_constant< _Tp, __v > type;
+										  operator value_type() const { return value; }
+	const value_type					  operator()() const { return value; }
 	// constexpr				  operator value_type() const { return value; } // c++11
 	// constexpr value_type	  operator()() const { return value; } // c++14
 };
 
-template< class _Tp, _Tp __v >
-const _Tp integral_constant_v = integral_constant< _Tp, __v >::value;
+template< typename _Tp, _Tp __v >
+struct integral_constant_t : public integral_constant< _Tp, __v > {}; // alias template
 
-// template< typename _Tp, _Tp __v >
-// struct integral_constant_v : integral_constant< _Tp, __v >::value {};
+#if FT_VERSION > 14
+template< class _Tp, _Tp __v >
+const _Tp integral_constant_v = integral_constant< _Tp, __v >::value; // template variable in c++14
+#endif
 
 // bool_constant
-#define _BOOL_CONS_(__b) integral_constant< bool, (__b) >
-typedef _BOOL_CONS_(true) true_type;
-typedef _BOOL_CONS_(false) false_type;
-
 template< bool __v >
-struct _BoolConstant : integral_constant< bool, __v > {};
+struct _BoolConstant : public integral_constant< bool, __v > {}; // alias template
+
+typedef _BoolConstant< true >  true_type;
+typedef _BoolConstant< false > false_type;
 
 }
 #endif

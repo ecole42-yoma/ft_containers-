@@ -7,7 +7,7 @@ SRC			=	main.cpp \
 
 SRC_DIR		=
 OBJ_DIR		=	object/
-INC_DIR		=	include/
+INC_DIR		=	containers/
 OBJ			=	$(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 
 #==============================================================================
@@ -23,11 +23,19 @@ CXXFLAGS	+=	$(addprefix -W, $(CXX_WARN_FLAGS))
 CXXFLAGS	+= -pedantic
 CXXFLAGS	+=	$(addprefix -std=, $(CXX_STD_FLAGS))
 
-
 DEBUG_FLAG	+=	LOG
+DEBUG_FLAG	+=	DEBUG
+
+FT_VERSION	=	03
+
+ifdef FT_VERSION
+	CXXFLAGS	+=	-D FT_VERSION=$(FT_VERSION)
+endif
 
 ifdef DEBUG_FLAG
 	LOG	+=	$(addprefix -D , $(DEBUG_FLAG))
+else
+	LOG += -D NDEBUG
 endif
 
 DEBUG		=	-g
