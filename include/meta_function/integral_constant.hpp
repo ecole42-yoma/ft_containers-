@@ -16,11 +16,11 @@ struct integral_constant {
 	// constexpr value_type	  operator()() const { return value; } // c++14
 };
 
-// template< class _Tp, _Tp __v >
-// const _Tp integral_constant< _Tp, __v >::value;
+template< class _Tp, _Tp __v >
+const _Tp integral_constant_v = integral_constant< _Tp, __v >::value;
 
-template< typename _Tp, _Tp __v >
-struct integral_constant_v : integral_constant< _Tp, __v >::value {};
+// template< typename _Tp, _Tp __v >
+// struct integral_constant_v : integral_constant< _Tp, __v >::value {};
 
 // bool_constant
 #define _BOOL_CONS_(__b) integral_constant< bool, (__b) >

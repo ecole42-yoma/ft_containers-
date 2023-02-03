@@ -6,7 +6,8 @@
 
 namespace ft {
 
-// is_integral
+// TODO : need to add CV-qualifiers version
+//  is_integral
 template< typename _Tp >
 struct _is_integral : ft::false_type {};
 
@@ -38,10 +39,13 @@ template<>
 struct _is_integral< unsigned long long > : ft::true_type {};
 
 template< typename _Tp >
-struct is_integral : ft::_BoolConstant< _is_integral< _Tp > > {};
+const bool _is_integral_v = _is_integral< _Tp >::value;
 
 template< typename _Tp >
-struct is_integral_v : is_integral< _Tp >::value {};
+struct is_integral : ft::_BoolConstant< _is_integral_v< _Tp > > {};
+
+template< typename _Tp >
+const bool is_integral_v = is_integral< _Tp >::value;
 
 }
 #endif
