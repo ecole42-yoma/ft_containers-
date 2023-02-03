@@ -6,3 +6,7 @@ ft_containers
 build/*
 
 object/*
+
+a.out
+
+test.cpp
