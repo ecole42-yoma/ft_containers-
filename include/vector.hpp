@@ -149,10 +149,4 @@ swap(ft::vector< T, Alloc >& lhs, ft::vector< T, Alloc >& rhs);
 
 } /* namespace ft */
 
-// namespace std {
-// template< class T, class Alloc >
-// void
-// swap(ft::vector< T, Alloc >& lhs, ft::vector< T, Alloc >& rhs);
-// }
-
 #endif /* __VECTOR_HPP__ */
