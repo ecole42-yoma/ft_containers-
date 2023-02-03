@@ -1,7 +1,7 @@
 #include <iomanip>
 #include <iostream>
 // #include <type_traits>
-#include "./include/type_traits.hpp"
+#include "../include/type_traits.hpp"
 
 class A {};
 
