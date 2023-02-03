@@ -3,6 +3,7 @@
 #define __CORE_UTIL_HPP__
 
 #include <cassert>
+#include <stdexcept>
 
 #define Assert(expression, message) assert(expression&& message)
 
