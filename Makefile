@@ -28,15 +28,13 @@ CXXFLAGS	+=	$(addprefix -W, $(CXX_WARN_FLAGS))
 CXXFLAGS	+= -pedantic
 CXXFLAGS	+=	$(addprefix -std=, $(CXX_STD_FLAGS))
 
-DEBUG_FLAG	+=	LOG
-DEBUG_FLAG	+=	DEBUG
-
 FT_VERSION	=	03
-
 ifdef FT_VERSION
 	CXXFLAGS	+=	-D FT_VERSION=$(FT_VERSION)
 endif
 
+DEBUG_FLAG	+=	LOG
+DEBUG_FLAG	+=	DEBUG
 ifdef DEBUG_FLAG
 	LOG	+=	$(addprefix -D , $(DEBUG_FLAG))
 else
