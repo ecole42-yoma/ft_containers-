@@ -6,10 +6,11 @@ NAME		= 	ft_containers
 SRC			=	main.cpp \
 
 SRC_DIR		=
-OBJ_DIR		=	object/
-INC_DIR		=	containers/\
-				include/ \
-				include/meta_function/
+OBJ_DIR		=	z_object/
+INC_DIR		=	containers/	\
+				iterator/	\
+				type/		\
+				util/
 
 INC			=	$(addprefix -I , $(INC_DIR))
 

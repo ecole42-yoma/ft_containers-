@@ -6,7 +6,6 @@
 
 namespace ft {
 
-// is_same
 template< typename _Tp, typename _Up >
 struct is_same : public ft::false_type {};
 

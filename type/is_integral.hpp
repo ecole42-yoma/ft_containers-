@@ -8,7 +8,6 @@ namespace ft {
 
 // TODO : need to add CV-qualifiers version
 
-//  is_integral
 template< typename _Tp >
 struct _is_integral : public ft::false_type {};
 

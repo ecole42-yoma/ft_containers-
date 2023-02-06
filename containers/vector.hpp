@@ -3,7 +3,11 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
-#include <memory>
+#ifdef TEST
+#include "../include/core_utils.hpp"
+#else
+#include "core_utils.hpp"
+#endif
 
 #ifdef LOG
 #include <iostream>
@@ -11,12 +15,12 @@
 
 namespace ft {
 
-template< class T, class Allocator = std::allocator< T > >
+template< class _T, class _Allocator = std::allocator< T > >
 class vector {
 
 	public:
-	typedef T										 value_type;
-	typedef Allocator								 allocator_type;
+	typedef _T										 value_type;
+	typedef _Allocator								 allocator_type;
 	typedef typename allocator_type::reference		 reference;
 	typedef typename allocator_type::const_reference const_reference;
 	typedef typename allocator_type::size_type		 size_type;
@@ -29,10 +33,10 @@ class vector {
 	typedef std::reverse_iterator< const_iterator >	 const_reverse_iterator;
 
 	private:
-	Allocator m_alloc_;
-	size_type m_size_;
-	size_type m_capacity_;
-	pointer	  m_data_;
+	_Allocator m_alloc_;
+	size_type  m_size_;
+	size_type  m_capacity_;
+	pointer	   m_data_;
 
 	/**
 	 * * [ default form] ---------------------------------------------------------------------------

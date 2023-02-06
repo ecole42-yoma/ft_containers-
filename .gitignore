@@ -5,7 +5,7 @@ ft_containers
 
 build/*
 
-object/*
+z_object/*
 
 a.out
 

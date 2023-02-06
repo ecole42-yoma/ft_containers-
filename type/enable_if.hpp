@@ -4,7 +4,6 @@
 
 namespace ft {
 
-// enable_if
 template< bool, typename _Tp = void >
 struct enable_if {};
 

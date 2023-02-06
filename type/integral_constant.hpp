@@ -4,7 +4,6 @@
 
 namespace ft {
 
-// integral_constant
 template< typename _Tp, _Tp __v >
 struct integral_constant {
 	static const _Tp					  value = __v;
@@ -26,10 +25,10 @@ const _Tp integral_constant_v = integral_constant< _Tp, __v >::value; // templat
 
 // bool_constant
 template< bool __v >
-struct _BoolConstant : public integral_constant< bool, __v > {}; // alias template
+struct bool_constant : public integral_constant< bool, __v > {}; // alias template
 
-typedef _BoolConstant< true >  true_type;
-typedef _BoolConstant< false > false_type;
+typedef bool_constant< true >  true_type;
+typedef bool_constant< false > false_type;
 
 }
 #endif
