@@ -3,10 +3,10 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
-#ifdef TEST
-#include "../include/core_utils.hpp"
+#ifdef BASIC
+#include "_core_utils.hpp"
 #else
-#include "core_utils.hpp"
+#include "../util/_core_utils.hpp"
 #endif
 
 #ifdef LOG
@@ -15,11 +15,11 @@
 
 namespace ft {
 
-template< class _T, class _Allocator = std::allocator< T > >
+template< class _Tp, class _Allocator = std::allocator< _Tp > >
 class vector {
 
 	public:
-	typedef _T										 value_type;
+	typedef _Tp										 value_type;
 	typedef _Allocator								 allocator_type;
 	typedef typename allocator_type::reference		 reference;
 	typedef typename allocator_type::const_reference const_reference;
@@ -29,8 +29,8 @@ class vector {
 	typedef typename allocator_type::const_pointer	 const_pointer;
 	typedef pointer									 iterator;
 	typedef const_pointer							 const_iterator;
-	typedef std::reverse_iterator< iterator >		 reverse_iterator;
-	typedef std::reverse_iterator< const_iterator >	 const_reverse_iterator;
+	typedef ft::reverse_iterator< iterator >		 reverse_iterator;
+	typedef ft::reverse_iterator< const_iterator >	 const_reverse_iterator;
 
 	private:
 	_Allocator m_alloc_;
@@ -123,33 +123,33 @@ class vector {
 /**
  * * [ non-member function overloads ] -------------------------------------------------------------
  */
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 bool
-operator==(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs);
+operator==(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
 
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 bool
-operator!=(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs);
+operator!=(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
 
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 bool
-operator<(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs);
+operator<(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
 
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 bool
-operator<=(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs);
+operator<=(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
 
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 bool
-operator>(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs);
+operator>(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
 
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 bool
-operator>=(const ft::vector< T, Alloc >& lhs, const ft::vector< T, Alloc >& rhs);
+operator>=(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
 
-template< class T, class Alloc >
+template< class _Tp, class _Allocator >
 void
-swap(ft::vector< T, Alloc >& lhs, ft::vector< T, Alloc >& rhs);
+swap(ft::vector< _Tp, _Allocator >& lhs, ft::vector< _Tp, _Allocator >& rhs);
 
 } /* namespace ft */
 
