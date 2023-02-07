@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -33,10 +34,11 @@ class vector {
 	typedef ft::reverse_iterator< const_iterator >	 const_reverse_iterator;
 
 	private:
-	_Allocator m_alloc_;
-	size_type  m_size_;
-	size_type  m_capacity_;
-	pointer	   m_data_;
+	_Allocator m_alloc;
+	size_type  m_size;
+	size_type  m_capacity;
+	pointer	   m_data;
+	int		   m_uncaught_exceptions = std::uncaught_exceptions();
 
 	/**
 	 * * [ default form] ---------------------------------------------------------------------------
@@ -49,7 +51,15 @@ class vector {
 	template< class InputIterator >
 	vector(InputIterator first, InputIterator last, const allocator_type& = allocator_type()); // range
 	vector(const vector& x);																   // copy
-	~vector();
+	~vector() {
+#ifdef LOG
+		if (m_uncaught_exceptions != std::uncaught_exceptions()) {
+			std::cout << "~vector() called during stack unwinding" << std::endl;
+		} else {
+			std::cout << "~vector() called normally" << std::endl;
+		}
+#endif
+	};
 	vector& operator=(const vector& x);
 
 	/**
