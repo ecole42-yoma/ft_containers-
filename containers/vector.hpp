@@ -1,6 +1,5 @@
 #pragma once
 
-#include <exception>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 

@@ -2,7 +2,18 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <string>
+#include <type_traits>
 #include <vector>
+
+template< bool >
+struct yoma_assert {};
+template<>
+struct yoma_assert< true > {
+	yoma_assert(const char*) {}
+};
+
+#define static_assert_(expression, message) yoma_assert< (expression) >(message)
 
 class yoma {
 
@@ -24,6 +35,11 @@ main(int argc, char** argv) {
 			v.push_back(i);
 			std::cout << "v.[i] = " << v[i] << std::endl;
 		}
+		int i = 10;
+		// static_assert((i > 10), "hi");
+		static_assert_((std::is_same< int, int >::value), "hi");
+		// static_assert_((std::is_same< int, char >::value), "hi");
+		// yoma_assert< (std::is_same< int, float >::value) >("hi");
 	}
 
 	std::cout << std::numeric_limits< int >::min() << std::endl;
@@ -35,7 +51,7 @@ main(int argc, char** argv) {
 	{
 		yoma* y = new yoma(10);
 		std::cout << std::endl;
-		yoma* y2 = ::operator new (yoma[10])(0);
+		// yoma* y2 = ::operator new (yoma[10])(0);
 	}
 	return 0;
 }

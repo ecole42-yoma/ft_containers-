@@ -7,6 +7,13 @@
 #include <memory>	 // alloc, auto_ptr
 #include <stdexcept> // exception
 
-#define Assert(expression, message) assert(expression&& message)
+template< bool >
+struct yoma_assert {};
+template<>
+struct yoma_assert< true > {
+	yoma_assert(const char*) {}
+};
+
+#define static_assert_(expression, message) yoma_assert< (expression) >(message)
 
 #endif
