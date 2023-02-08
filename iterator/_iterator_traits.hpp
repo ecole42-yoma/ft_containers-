@@ -4,6 +4,7 @@
 #define __ITERATOR_TRAITS_HPP__
 
 #include "../type/_type_traits.hpp"
+#include "has_iterator_category.hpp"
 #include "has_iterator_typedefs.hpp"
 
 #include <cstddef>
@@ -43,11 +44,20 @@ struct iterator_traits
 
 template< class _Tp >
 struct iterator_traits< _Tp* > {
-	typedef ptrdiff_t						difference_type;
-	typedef typename remove_cv< _Tp >::type value_type;
-	typedef _Tp*							pointer;
-	typedef _Tp&							reference;
-	typedef random_access_iterator_tag		iterator_category;
+	typedef ptrdiff_t				   difference_type;
+	typedef _Tp						   value_type;
+	typedef value_type*				   pointer;
+	typedef value_type&				   reference;
+	typedef random_access_iterator_tag iterator_category;
+};
+
+template< class _Tp >
+struct iterator_traits< const _Tp* > {
+	typedef ptrdiff_t				   difference_type;
+	typedef _Tp						   value_type;
+	typedef const value_type*		   pointer;
+	typedef const value_type&		   reference;
+	typedef random_access_iterator_tag iterator_category;
 };
 
 }

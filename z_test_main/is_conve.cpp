@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iterator>
 
 struct S {};
 struct T : public S {};
