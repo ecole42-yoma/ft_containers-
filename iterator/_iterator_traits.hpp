@@ -51,14 +51,5 @@ struct iterator_traits< _Tp* > {
 	typedef random_access_iterator_tag iterator_category;
 };
 
-template< class _Tp >
-struct iterator_traits< const _Tp* > {
-	typedef ptrdiff_t				   difference_type;
-	typedef _Tp						   value_type;
-	typedef const value_type*		   pointer;
-	typedef const value_type&		   reference;
-	typedef random_access_iterator_tag iterator_category;
-};
-
 }
 #endif
