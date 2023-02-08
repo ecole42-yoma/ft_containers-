@@ -26,6 +26,7 @@ class yoma {
 int
 main(int argc, char** argv) {
 	// std::allocator< int > alloc;
+	static_assert(std::is_integral< int >::value, "hi");
 	if (argc == 2) {
 		std::vector< int > v;
 		// std::vector< int > v = { 1, 2, 3, 4 };

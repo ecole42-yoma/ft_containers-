@@ -1,7 +1,7 @@
 #include <iomanip>
 #include <iostream>
 // #include <type_traits>
-#include "../include/type_traits.hpp"
+#include "../type/_type_traits.hpp"
 #include <cassert>
 
 class A {};
@@ -39,6 +39,9 @@ main() {
 	SHOW(ft::is_same< char, char >::value);
 	SHOW(ft::is_integral< A >::value);
 	SHOW(ft::is_integral< int >::value);
+	SHOW(ft::is_integral< const int >::value);
+	SHOW(ft::is_integral< volatile int >::value);
+	SHOW(ft::is_integral< volatile const int >::value);
 	SHOW(ft::is_integral< E >());
 	SHOW(ft::is_integral< float >());
 	SHOW(ft::is_integral< int >());
