@@ -9,6 +9,7 @@ ifdef TEST
 	SRC 	=	main2.cpp
 else
 	SRC 	=	main.cpp
+	CXXFLAGS	+= -D BASIC
 endif
 
 SRC_DIR		=

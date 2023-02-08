@@ -6,11 +6,13 @@
 
 #ifdef BASIC
 #include "_core_utils.hpp"
+#include "_type_traits.hpp"
+#include "reverse_iterator.hpp"
 #else
-#include "../util/_core_utils.hpp"
-#endif
 #include "../iterator/reverse_iterator.hpp"
 #include "../type/_type_traits.hpp"
+#include "../util/_core_utils.hpp"
+#endif
 
 #ifdef LOG
 #include <iostream>
