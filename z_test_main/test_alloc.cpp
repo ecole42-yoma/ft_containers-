@@ -42,6 +42,7 @@ main(int argc, char** argv) {
 		// static_assert_((std::is_same< int, char >::value), "hi");
 		// yoma_assert< (std::is_same< int, float >::value) >("hi");
 	}
+	std::allocator< int > alloc_int;
 
 	std::cout << std::numeric_limits< int >::min() << std::endl;
 	std::cout << std::numeric_limits< int >::max() << std::endl;

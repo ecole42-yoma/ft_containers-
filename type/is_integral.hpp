@@ -31,10 +31,11 @@ template<>
 struct __is_integral_work< long > : public ft::true_type {};
 template<>
 struct __is_integral_work< unsigned long > : public ft::true_type {};
-template<>
-struct __is_integral_work< long long > : public ft::true_type {};
-template<>
-struct __is_integral_work< unsigned long long > : public ft::true_type {};
+
+// template<> // C++ 11
+// struct __is_integral_work< long long > : public ft::true_type {};
+// template<> // C++ 11
+// struct __is_integral_work< unsigned long long > : public ft::true_type {};
 
 #if FT_VERSION > 14
 template< typename _Tp >

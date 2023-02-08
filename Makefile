@@ -3,7 +3,13 @@
 #==============================================================================
 NAME		= 	ft_containers
 
-SRC			=	main.cpp \
+# SRC			=	main.cpp
+
+ifdef TEST
+	SRC 	=	main2.cpp
+else
+	SRC 	=	main.cpp
+endif
 
 SRC_DIR		=
 OBJ_DIR		=	z_object/
@@ -69,3 +75,4 @@ $(OBJ_DIR)%.o:	$(SRC_DIR)%.cpp $(INC_DIR);	$(CXX) $(CXXFLAGS) $(INC) -o $@ -c $<
 std			:	; make re CXXFLAGS="$(CXXFLAGS) -D STD"
 log			:	; make re CXXFLAGS="$(CXXFLAGS) $(LOG)"
 sntz		:	; make re CXXFLAGS="$(CXXFLAGS) $(DEBUG) $(SNTZ)"
+test 		:	; make re TEST=1

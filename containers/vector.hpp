@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -8,6 +9,8 @@
 #else
 #include "../util/_core_utils.hpp"
 #endif
+#include "../iterator/reverse_iterator.hpp"
+#include "../type/_type_traits.hpp"
 
 #ifdef LOG
 #include <iostream>
@@ -37,19 +40,22 @@ class vector {
 	size_type  m_size;
 	size_type  m_capacity;
 	pointer	   m_data;
-	int		   m_uncaught_exceptions = std::uncaught_exceptions();
+	int		   m_u_c;
 
 	/**
 	 * * [ default form] ---------------------------------------------------------------------------
 	 */
 	public:
-	explicit vector(const allocator_type& alloc = allocator_type()); // default
+	vector();
+	explicit vector(const allocator_type& alloc); // default
+
 	explicit vector(size_type			  n,
 					const value_type&	  val	= value_type(),
 					const allocator_type& alloc = allocator_type()); // fill
-	template< class InputIterator >
-	vector(InputIterator first, InputIterator last, const allocator_type& = allocator_type()); // range
-	vector(const vector& x);																   // copy
+
+	template< class _InputIterator >
+	vector(_InputIterator first, _InputIterator last, const allocator_type& = allocator_type()); // range
+	vector(const vector& x);																	 // copy
 	~vector() {
 #ifdef LOG
 		if (m_uncaught_exceptions != std::uncaught_exceptions()) {
@@ -128,6 +134,32 @@ class vector {
 
 	bool __invariants() const;
 }; /* class vector */
+
+template< typename _Tp, typename _Allocator >
+ft::vector< _Tp, _Allocator >::vector(const allocator_type& alloc) // default
+  try
+  : m_alloc(alloc)
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+} catch (...) {
+}
+
+template< typename _Tp, typename _Allocator >
+ft::vector< _Tp, _Allocator >::vector(size_type				n,
+									  const value_type&		val,
+									  const allocator_type& alloc) // fill
+  try
+  : m_alloc(alloc)
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+	if (n > 0) {
+	}
+} catch (...) {
+}
 
 /**
  * * [ non-member function overloads ] -------------------------------------------------------------
