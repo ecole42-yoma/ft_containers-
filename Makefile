@@ -39,6 +39,7 @@ CXXFLAGS	+=	$(addprefix -std=, $(CXX_STD_FLAGS))
 FT_VERSION	=	03
 ifdef FT_VERSION
 	CXXFLAGS	+=	-D FT_VERSION=$(FT_VERSION)
+	CXXFLAGS	+=	-D LOG
 endif
 
 DEBUG_FLAG	+=	LOG

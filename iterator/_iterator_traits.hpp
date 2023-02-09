@@ -6,6 +6,7 @@
 #include "../type/_type_traits.hpp"
 #include "has_iterator_category.hpp"
 #include "has_iterator_typedefs.hpp"
+#include "is_iterator.hpp"
 
 #include <cstddef>
 
