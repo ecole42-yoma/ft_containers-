@@ -64,8 +64,8 @@ class vector {
 					const allocator_type& alloc = allocator_type()); // fill
 
 	__template_input__ vector(
-	  _Input																										first,
-	  typename ft::enable_if< !ft::is_integral< _Input >::value && ft::is_iterator< _Input >::value, _Input >::type last,
+	  _Input																   first,
+	  typename ft::enable_if< ft::is_iterator< _Input >::value, _Input >::type last,
 	  const allocator_type& alloc = std::allocator< typename ft::iterator_traits< _Input >::value_type >()); // range
 
 	vector(const vector& from); // copy
@@ -168,10 +168,12 @@ __template__
 __vector__::vector(const allocator_type& alloc) // default
   try
   : __alloc(alloc)
-  , __size(0)
-  , __capacity(0)
-  , __data(NULL) {
+  , __size()
+  , __capacity()
+  , __data() {
 	LOG_("default constructor");
+} catch (const std::exception& e) {
+	std::cerr << e.what() << std::endl;
 } catch (...) {
 }
 
@@ -183,29 +185,28 @@ __vector__::vector(size_type			 n,
   : __alloc(alloc)
   , __size(n)
   , __capacity(n)
-  , __data(NULL) {
+  , __data() {
 	LOG_("fill constructor");
 	if (n > 0) {
-		__data	   = __alloc.allocate(n * sizeof(value_type));
-		__capacity = n;
-		__size	   = n;
+		__data = __alloc.allocate(n * sizeof(value_type));
 		for (size_type i = 0; i < n; ++i) {
 			__alloc.construct(__data + i, val);
 		}
 	}
 } catch (const std::exception& e) {
+	std::cerr << e.what() << std::endl;
 } catch (...) {
 }
 
 __template__ __template_input__
-__vector__::vector(_Input																										 first,
-				   typename ft::enable_if< !ft::is_integral< _Input >::value && ft::is_iterator< _Input >::value, _Input >::type last,
-				   const allocator_type& alloc) // range
+__vector__::vector(_Input																	first,
+				   typename ft::enable_if< ft::is_iterator< _Input >::value, _Input >::type last,
+				   const allocator_type&													alloc) // range
   try
   : __alloc(alloc)
-  , __size(0)
-  , __capacity(0)
-  , __data(NULL) {
+  , __size()
+  , __capacity()
+  , __data() {
 	LOG_("range constructor : input iterator");
 	(void)first;
 	(void)last;
@@ -214,29 +215,15 @@ __vector__::vector(_Input																										 first,
 } catch (...) {
 }
 
-// __template__ __template_iter__
-// __vector__::vector(typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type first,
-// 				   _Iter																  last,
-// 				   const allocator_type&												  alloc) // range
-//   try
-//   : __alloc(alloc)
-//   , __size(0)
-//   , __capacity(0)
-//   , __data(NULL) {
-// 	LOG_("range constructor");
-// 	(void)first;
-// 	(void)last;
-// } catch (const std::exception& e) {
-// 	std::cerr << e.what() << std::endl;
-// } catch (...) {
-// }
 __template__
 __vector__::vector(const vector& from) // copy
   try
-  : __alloc(allocator_type())
-  , __size(0)
-  , __capacity(0)
-  , __data(NULL) {
+  : __alloc(from.__alloc)
+  , __size(from.__size)
+  , __capacity(from.__capacity)
+  , __data() {
+} catch (const std::exception& e) {
+	std::cerr << e.what() << std::endl;
 } catch (...) {
 	(void)from;
 }
@@ -247,7 +234,7 @@ __return__(__vector__&) __vector__::operator=(const vector& from) {
 	if (this != &from) {
 		this->~vector();
 		if (from.size() > 0) { // TODO: make to __function, check how to  unalloc copy
-			__data	   = __alloc.allocate(from.size() * sizeof(value_type));
+			__data	   = __alloc.allocate(from.size());
 			__capacity = from.size();
 			__size	   = from.size();
 			for (size_type i = 0; i < from.size(); ++i) {

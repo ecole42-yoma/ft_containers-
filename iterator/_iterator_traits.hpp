@@ -26,13 +26,14 @@ struct __iterator_traits_work< _Iter, true > {
 	typedef typename _Iter::reference		  reference;
 	typedef typename _Iter::iterator_category iterator_category;
 };
+
 template< typename _Iter >
 struct iterator_traits
   : __iterator_traits_work< _Iter,
 							has_iterator_typedefs< _Iter >::value &&
 							  (ft::is_convertible< typename _Iter::iterator_category, input_iterator_tag >::value ||
-							   ft::is_convertible< typename _Iter::iterator_category, output_iterator_tag >::value) > {
-};
+							   ft::is_convertible< typename _Iter::iterator_category, output_iterator_tag >::value) > {};
+
 template< typename _Iter >
 struct iterator_traits< _Iter* > {
 	typedef ptrdiff_t				   difference_type;

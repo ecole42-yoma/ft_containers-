@@ -8,6 +8,7 @@ template< typename _Tp >
 struct remove_const {
 	typedef _Tp type;
 };
+
 template< typename _Tp >
 struct remove_const< const _Tp > {
 	typedef _Tp type;
@@ -17,6 +18,7 @@ template< typename _Tp >
 struct remove_volatile {
 	typedef _Tp type;
 };
+
 template< typename _Tp >
 struct remove_volatile< volatile _Tp > {
 	typedef _Tp type;
