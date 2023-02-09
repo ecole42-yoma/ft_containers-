@@ -5,14 +5,14 @@
 
 #ifdef BASIC
 #include "_core_utils.hpp"
-#include "_iterator.hpp"
 #include "_iterator_traits.hpp"
 #include "_type_traits.hpp"
+#include "iterator.hpp"
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
 #else
-#include "../iterator/_iterator.hpp"
 #include "../iterator/_iterator_traits.hpp"
+#include "../iterator/iterator.hpp"
 #include "../iterator/random_access_iterator.hpp"
 #include "../iterator/reverse_iterator.hpp"
 #include "../type/_type_traits.hpp"
@@ -191,7 +191,7 @@ THIS::vector(size_type			   n,
   , __data(NULL) {
 	LOG_("fill constructor");
 	if (n > 0) {
-		__data	   = __alloc.allocate(n);
+		__data	   = __alloc.allocate(n * sizeof(value_type));
 		__capacity = n;
 		__size	   = n;
 		for (size_type i = 0; i < n; ++i) {

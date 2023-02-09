@@ -4,22 +4,14 @@
 #define __ITERATOR_TRAITS_HPP__
 
 #include "../type/_type_traits.hpp"
-#include "_iterator.hpp"
 #include "has_iterator_x.hpp"
-#include "is_iterator.hpp"
+#include "is_iterator_x.hpp"
+#include "iterator.hpp"
+#include "iterator_tag.hpp"
 
 #include <cstddef>
 
 namespace ft {
-
-/**
- * * [ iterator category ] -------------------------------------------------------------------------
- */
-struct input_iterator_tag {};
-struct output_iterator_tag {};
-struct forward_iterator_tag : public input_iterator_tag {};
-struct bidirectional_iterator_tag : public forward_iterator_tag {};
-struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
 /**
  * * [ iterator_traits ] ---------------------------------------------------------------------------
@@ -49,6 +41,14 @@ struct iterator_traits< _Iter* > {
 	typedef value_type&				   reference;
 	typedef random_access_iterator_tag iterator_category;
 };
+// template< typename _Iter > // XXX: need to check if this is needed
+// struct iterator_traits< const _Iter* > {
+// 	typedef ptrdiff_t				   difference_type;
+// 	typedef _Iter					   value_type;
+// 	typedef const value_type*		   pointer;
+// 	typedef const value_type&		   reference;
+// 	typedef random_access_iterator_tag iterator_category;
+// };
 
 }
 #endif
