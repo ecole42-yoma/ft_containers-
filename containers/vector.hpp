@@ -23,15 +23,18 @@
 
 namespace ft {
 
-template< typename Vector >
-class randomIterator : public ft::iterator< ft::random_access_iterator_tag, typename Vector::value_type > {
-
+template< typename _Iter >
+// class randomIterator { // for primitive alloc pointer
+// public:
+// 	typedef _Iter															 iterator_type;
+class randomIterator : public ft::iterator< ft::random_access_iterator_tag, _Iter > {
 	public:
-	// typedef typename randomIterator::difference_type   difference_type;
-	// typedef typename randomIterator::value_type		   value_type;
-	// typedef typename randomIterator::iterator_category iterator_category;
-	typedef typename randomIterator::pointer   pointer;
-	typedef typename randomIterator::reference reference;
+	typedef randomIterator< _Iter >											 iterator_type;
+	typedef typename ft::iterator_traits< iterator_type >::iterator_category iterator_category;
+	typedef typename ft::iterator_traits< iterator_type >::value_type		 value_type;
+	typedef typename ft::iterator_traits< iterator_type >::difference_type	 difference_type;
+	typedef typename ft::iterator_traits< iterator_type >::pointer			 pointer;
+	typedef typename ft::iterator_traits< iterator_type >::reference		 reference;
 
 	private:
 	pointer __pointer;
@@ -81,10 +84,12 @@ class vector {
 	typedef typename allocator_type::const_pointer	 const_pointer;
 	typedef typename allocator_type::reference		 reference;
 	typedef typename allocator_type::const_reference const_reference;
-	typedef randomIterator< self_type >				 iterator;
-	typedef const randomIterator< self_type >		 const_iterator;
-	typedef ft::reverse_iterator< iterator >		 reverse_iterator;
-	typedef ft::reverse_iterator< const_iterator >	 const_reverse_iterator;
+	// typedef randomIterator< pointer >				 iterator; // for primitive alloc pointer
+	// typedef const randomIterator< pointer >			 const_iterator; // for primitive alloc pointer
+	typedef randomIterator< value_type >		   iterator;
+	typedef const randomIterator< value_type >	   const_iterator;
+	typedef ft::reverse_iterator< iterator >	   reverse_iterator;
+	typedef ft::reverse_iterator< const_iterator > const_reverse_iterator;
 
 	private:
 	_Allocator __alloc;

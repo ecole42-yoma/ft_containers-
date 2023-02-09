@@ -13,10 +13,10 @@ struct __is_convertible_work {
 	typedef char (&__false)[2];
 
 	static __false test__(...);
-	static __true  test__(_T2);
+	static __true  test__(_T2*);
 
 	public:
-	static const bool value = sizeof(test__(static_cast< _T1 >(0))) == sizeof(__true);
+	static const bool value = sizeof(test__(static_cast< _T1* >(0))) == sizeof(__true);
 };
 
 template< typename _T1, typename _T2 >
