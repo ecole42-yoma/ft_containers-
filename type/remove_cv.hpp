@@ -4,28 +4,26 @@
 
 namespace ft {
 
-template< class _Tp >
+template< typename _Tp >
 struct remove_const {
 	typedef _Tp type;
 };
-template< class _Tp >
+template< typename _Tp >
 struct remove_const< const _Tp > {
 	typedef _Tp type;
 };
 
-template< class _Tp >
+template< typename _Tp >
 struct remove_volatile {
 	typedef _Tp type;
 };
-template< class _Tp >
+template< typename _Tp >
 struct remove_volatile< volatile _Tp > {
 	typedef _Tp type;
 };
 
-template< class _Tp >
-struct remove_cv {
-	typedef typename remove_volatile< typename remove_const< _Tp >::type >::type type;
-};
+template< typename _Tp >
+struct remove_cv : remove_volatile< typename remove_const< _Tp >::type > {};
 
 }
 #endif

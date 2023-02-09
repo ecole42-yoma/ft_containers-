@@ -7,10 +7,10 @@
 namespace ft {
 
 template< typename _Tp, typename _Up >
-struct is_same : public ft::false_type {};
+struct is_same : ft::false_type {};
 
 template< typename _Tp >
-struct is_same< _Tp, _Tp > : public ft::true_type {};
+struct is_same< _Tp, _Tp > : ft::true_type {};
 
 }
 #endif

@@ -4,7 +4,7 @@
 
 namespace ft {
 
-template< class _Iter >
+template< typename _Iter >
 struct reverse_iterator {};
 
 }

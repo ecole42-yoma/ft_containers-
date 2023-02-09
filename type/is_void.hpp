@@ -7,10 +7,10 @@
 namespace ft {
 
 template< typename _Tp >
-struct is_void : public ft::false_type {};
+struct is_void : ft::false_type {};
 
 template<>
-struct is_void< void > : public ft::true_type {};
+struct is_void< void > : ft::true_type {};
 
 template< typename >
 struct void_t {

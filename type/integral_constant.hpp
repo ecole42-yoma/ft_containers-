@@ -16,16 +16,16 @@ struct integral_constant {
 };
 
 template< typename _Tp, _Tp __v >
-struct integral_constant_t : public integral_constant< _Tp, __v > {}; // alias template
+struct integral_constant_t : integral_constant< _Tp, __v > {}; // alias template
 
 #if FT_VERSION > 14
-template< class _Tp, _Tp __v >
+template< typename _Tp, _Tp __v >
 const _Tp integral_constant_v = integral_constant< _Tp, __v >::value; // template variable in c++14
 #endif
 
 // bool_constant
 template< bool __v >
-struct bool_constant : public integral_constant< bool, __v > {}; // alias template
+struct bool_constant : integral_constant< bool, __v > {}; // alias template
 
 typedef bool_constant< true >  true_type;
 typedef bool_constant< false > false_type;
