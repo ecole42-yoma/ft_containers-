@@ -4,6 +4,7 @@
 #define __ITERATOR_TRAITS_HPP__
 
 #include "../type/_type_traits.hpp"
+#include "_iterator.hpp"
 #include "has_iterator_x.hpp"
 #include "is_iterator.hpp"
 
