@@ -9,6 +9,8 @@
 #include "_type_traits.hpp"
 #include "reverse_iterator.hpp"
 #else
+#include "../iterator/_iterator.hpp"
+#include "../iterator/_iterator_traits.hpp"
 #include "../iterator/reverse_iterator.hpp"
 #include "../type/_type_traits.hpp"
 #include "../util/_core_utils.hpp"
@@ -18,22 +20,72 @@
 #include <iostream>
 #endif
 
+#define THIS vector< _Tp, _Allocator >
+
 namespace ft {
 
-template< class _Tp, class _Allocator = std::allocator< _Tp > >
+template< typename Vector >
+class randomIterator : ft::iterator< ft::random_access_iterator_tag, typename Vector::value_type > {
+
+	public:
+	typedef typename randomIterator::value_type		value_type;
+	typedef typename randomIterator::pointer_type	pointer_type;
+	typedef typename randomIterator::reference_type reference_type;
+
+	private:
+	pointer_type m_pointer;
+
+	public:
+	randomIterator(pointer_type input_pointer = NULL)
+	  : m_pointer(input_pointer) {}
+
+	randomIterator& operator++() {
+		++m_pointer;
+		return *this;
+	}
+
+	randomIterator operator++(int) {
+		randomIterator tmp = *this;
+		++(*this);
+		return tmp;
+	}
+
+	randomIterator& operator--() {
+		--m_pointer;
+		return *this;
+	}
+
+	randomIterator operator--(int) {
+		randomIterator tmp = *this;
+		--(*this);
+		return tmp;
+	}
+
+	reference_type operator[](int index) { return m_pointer[index]; }
+	pointer_type   operator->() { return m_pointer; }
+	reference_type operator*() { return *m_pointer; }
+
+	bool operator==(const randomIterator& rhs) const { return m_pointer == rhs.m_pointer; }
+	bool operator!=(const randomIterator& rhs) const { return !(*this == rhs); }
+	// if integral type then allow <=, >=, <, >
+
+}; // class randomIterator
+
+template< typename _Tp, typename _Allocator = std::allocator< _Tp > >
 class vector {
 
 	public:
+	typedef vector< _Tp, _Allocator >				 self_type;
 	typedef _Tp										 value_type;
 	typedef _Allocator								 allocator_type;
-	typedef typename allocator_type::reference		 reference;
-	typedef typename allocator_type::const_reference const_reference;
 	typedef typename allocator_type::size_type		 size_type;
 	typedef typename allocator_type::difference_type difference_type;
 	typedef typename allocator_type::pointer		 pointer;
 	typedef typename allocator_type::const_pointer	 const_pointer;
-	typedef pointer									 iterator;
-	typedef const_pointer							 const_iterator;
+	typedef typename allocator_type::reference		 reference;
+	typedef typename allocator_type::const_reference const_reference;
+	typedef randomIterator< self_type >				 iterator;
+	typedef const randomIterator< self_type >		 const_iterator;
 	typedef ft::reverse_iterator< iterator >		 reverse_iterator;
 	typedef ft::reverse_iterator< const_iterator >	 const_reverse_iterator;
 
@@ -50,23 +102,14 @@ class vector {
 	public:
 	vector();
 	explicit vector(const allocator_type& alloc); // default
-
 	explicit vector(size_type			  n,
 					const value_type&	  val	= value_type(),
 					const allocator_type& alloc = allocator_type()); // fill
-
 	template< class _InputIterator >
-	vector(_InputIterator first, _InputIterator last, const allocator_type& = allocator_type()); // range
-	vector(const vector& x);																	 // copy
-	~vector() {
-#ifdef LOG
-		if (m_uncaught_exceptions != std::uncaught_exceptions()) {
-			std::cout << "~vector() called during stack unwinding" << std::endl;
-		} else {
-			std::cout << "~vector() called normally" << std::endl;
-		}
-#endif
-	};
+	vector(_InputIterator first, _InputIterator last, const allocator_type& alloc = allocator_type()); // range
+	vector(const vector& x);																		   // copy
+
+	~vector();
 	vector& operator=(const vector& x);
 
 	/**
@@ -135,33 +178,12 @@ class vector {
 	void resize(size_type sz, value_type c = value_type());
 
 	bool __invariants() const;
+
+	/**
+	 * * [ internal workhorse ] --------------------------------------------------------------------
+	 */
+
 }; /* class vector */
-
-template< typename _Tp, typename _Allocator >
-ft::vector< _Tp, _Allocator >::vector(const allocator_type& alloc) // default
-  try
-  : m_alloc(alloc)
-  , m_size(0)
-  , m_capacity(0)
-  , m_data(NULL)
-  , m_u_c(std::uncaught_exceptions()) {
-} catch (...) {
-}
-
-template< typename _Tp, typename _Allocator >
-ft::vector< _Tp, _Allocator >::vector(size_type				n,
-									  const value_type&		val,
-									  const allocator_type& alloc) // fill
-  try
-  : m_alloc(alloc)
-  , m_size(0)
-  , m_capacity(0)
-  , m_data(NULL)
-  , m_u_c(std::uncaught_exceptions()) {
-	if (n > 0) {
-	}
-} catch (...) {
-}
 
 /**
  * * [ non-member function overloads ] -------------------------------------------------------------
@@ -194,6 +216,149 @@ template< class _Tp, class _Allocator >
 void
 swap(ft::vector< _Tp, _Allocator >& lhs, ft::vector< _Tp, _Allocator >& rhs);
 
-} /* namespace ft */
+/**
+ * * [ default form] -------------------------------------------------------------------------------
+ */
+template< typename _Tp, typename _Allocator >
+THIS::vector() // default
+  try
+  : m_alloc(allocator_type())
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+} catch (...) {
+}
 
+template< typename _Tp, typename _Allocator >
+THIS::vector(const allocator_type& alloc) // default
+  try
+  : m_alloc(alloc)
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+} catch (...) {
+}
+
+template< typename _Tp, typename _Allocator >
+THIS::vector(size_type			   n,
+			 const value_type&	   val,
+			 const allocator_type& alloc) // fill
+  try
+  : m_alloc(alloc)
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+	if (n > 0) {
+		m_data	   = m_alloc.allocate(n);
+		m_capacity = n;
+		m_size	   = n;
+		for (size_type i = 0; i < n; ++i) {
+			m_alloc.construct(m_data[i], val);
+		}
+	}
+} catch (...) {
+}
+
+template< typename _Tp, typename _Allocator >
+template< class _InputIterator >
+THIS::vector(_InputIterator first, _InputIterator last, const allocator_type& alloc) // range
+  try
+  : m_alloc(alloc)
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+} catch (...) {
+}
+
+template< typename _Tp, typename _Allocator >
+THIS::vector(const vector& x) // copy
+  try
+  : m_alloc(allocator_type())
+  , m_size(0)
+  , m_capacity(0)
+  , m_data(NULL)
+  , m_u_c(std::uncaught_exceptions()) {
+} catch (...) {
+}
+
+template< typename _Tp, typename _Allocator >
+THIS&
+THIS::operator=(const vector& x) {}
+
+template< typename _Tp, typename _Allocator >
+THIS::~vector() {
+#ifdef LOG
+	if (m_uncaught_exceptions != std::uncaught_exceptions()) {
+		std::cout << "~vector() called during stack unwinding" << std::endl;
+	} else {
+		std::cout << "~vector() called normally" << std::endl;
+	}
+#endif
+
+	if (m_data) {
+		clear();
+		m_alloc.deallocate(m_data, m_capacity * sizeof(value_type));
+	}
+}
+
+/**
+ * * [ allocator ] ---------------------------------------------------------------------------------
+ */
+
+/**
+ * * [ element access ] ----------------------------------------------------------------------------
+ */
+
+/**
+ * * [ iterators ] ---------------------------------------------------------------------------------
+ */
+template< typename _Tp, typename _Allocator >
+typename THIS::iterator
+THIS::begin() {
+	return iterator(m_data);
+}
+
+template< typename _Tp, typename _Allocator >
+typename THIS::iterator
+THIS::end() {
+	return iterator(m_data + m_size);
+}
+
+template< typename _Tp, typename _Allocator >
+typename THIS::const_iterator
+THIS::begin() const {
+	return iterator(m_data);
+}
+
+template< typename _Tp, typename _Allocator >
+typename THIS::const_iterator
+THIS::end() const {
+	return iterator(m_data + m_size);
+}
+
+// reverse_iterator
+// rbegin();
+// reverse_iterator
+// rend();
+// const_reverse_iterator
+// rbegin() const;
+// const_reverse_iterator
+// rend() const;
+
+/**
+ * * [ capacity ] ----------------------------------------------------------------------------------
+ */
+
+/**
+ * * [ modifiers ] ---------------------------------------------------------------------------------
+ */
+
+/**
+ * * [ internal workhorse ] ------------------------------------------------------------------------
+ */
+} /* namespace ft */
 #endif /* __VECTOR_HPP__ */

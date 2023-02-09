@@ -43,6 +43,15 @@ main(int argc, char** argv) {
 		// yoma_assert< (std::is_same< int, float >::value) >("hi");
 	}
 	std::allocator< int > alloc_int;
+	std::vector< int >	  v(10, 1);
+	std::cout << "v.size() = " << v.size() << std::endl;
+	std::cout << "v.capacity() = " << v.capacity() << std::endl;
+	std::cout << v[0] << std::endl;
+
+	std::vector< int > v2(10, 12);
+	std::cout << "v2.size() = " << v2.size() << std::endl;
+	std::cout << "v2.capacity() = " << v2.capacity() << std::endl;
+	std::cout << v2[0] << std::endl;
 
 	std::cout << std::numeric_limits< int >::min() << std::endl;
 	std::cout << std::numeric_limits< int >::max() << std::endl;
