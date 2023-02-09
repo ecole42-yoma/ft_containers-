@@ -5,14 +5,15 @@
 #include "_iterator_traits.hpp"
 
 namespace ft {
-//
+
 template< typename _Iter >
-// class randomIterator { // for primitive alloc pointer
+// class randomIterator : public ft::iterator< ft::random_access_iterator_tag, _Iter > {
 // public:
-// 	typedef _Iter															 iterator_type;
-class randomIterator : public ft::iterator< ft::random_access_iterator_tag, _Iter > {
+// typedef randomIterator< _Iter >											 iterator_type;
+// upper case, it can't work on account of user allocator's iterator_traits
+class randomIterator {
 	public:
-	typedef randomIterator< _Iter >											 iterator_type;
+	typedef _Iter															 iterator_type;
 	typedef typename ft::iterator_traits< iterator_type >::iterator_category iterator_category;
 	typedef typename ft::iterator_traits< iterator_type >::value_type		 value_type;
 	typedef typename ft::iterator_traits< iterator_type >::difference_type	 difference_type;

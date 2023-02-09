@@ -2,10 +2,17 @@
 #ifndef __ENABLE_IF_HPP__
 #define __ENABLE_IF_HPP__
 
+#include "integral_constant.hpp"
+
 namespace ft {
 
 template< bool, typename _Tp = void >
 struct enable_if {};
+
+// template< typename _Tp >
+// struct enable_if< true, _Tp > : ft::true_type {
+// 	typedef _Tp type;
+// };
 
 template< typename _Tp >
 struct enable_if< true, _Tp > {

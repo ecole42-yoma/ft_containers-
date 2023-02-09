@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <stdexcept>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -21,52 +23,54 @@
 
 #include <iostream>
 
-#define THIS vector< _Tp, _Allocator >
+#define __vector__			 vector< _Tp, _Alloc >
+#define __template__		 template< typename _Tp, typename _Alloc >
+#define __template_iter__	 template< typename _Iter >
+#define __template_input__	 template< typename _Input >
+#define __template_forward__ template< typename _Forward >
+#define __return__(type)	 type
 
 namespace ft {
 
-template< typename _Tp, typename _Allocator = std::allocator< _Tp > >
+template< typename _Tp, typename _Alloc = std::allocator< _Tp > >
 class vector {
-
 	public:
-	typedef vector< _Tp, _Allocator >				 self_type;
+	typedef vector< _Tp, _Alloc >					 self_type;
 	typedef _Tp										 value_type;
-	typedef _Allocator								 allocator_type;
+	typedef _Alloc									 allocator_type;
 	typedef typename allocator_type::size_type		 size_type;
 	typedef typename allocator_type::difference_type difference_type;
 	typedef typename allocator_type::pointer		 pointer;
 	typedef typename allocator_type::const_pointer	 const_pointer;
 	typedef typename allocator_type::reference		 reference;
 	typedef typename allocator_type::const_reference const_reference;
-	// typedef randomIterator< pointer >				 iterator; // for primitive alloc pointer
-	// typedef const randomIterator< pointer >			 const_iterator; // for primitive alloc pointer
-	typedef randomIterator< value_type >		   iterator;
-	typedef const randomIterator< value_type >	   const_iterator;
-	typedef ft::reverse_iterator< iterator >	   reverse_iterator;
-	typedef ft::reverse_iterator< const_iterator > const_reverse_iterator;
+	typedef randomIterator< pointer >				 iterator;
+	typedef const randomIterator< pointer >			 const_iterator;
+	typedef ft::reverse_iterator< iterator >		 reverse_iterator;
+	typedef ft::reverse_iterator< const_iterator >	 const_reverse_iterator;
 
 	private:
-	_Allocator __alloc;
-	size_type  __size;
-	size_type  __capacity;
-	pointer	   __data;
+	allocator_type __alloc;
+	size_type	   __size;
+	size_type	   __capacity;
+	pointer		   __data;
 
 	/**
 	 * * [ default form] ---------------------------------------------------------------------------
 	 */
 	public:
-	vector();
-	explicit vector(const allocator_type& alloc); // default
-	explicit vector(size_type			  n,
-					const value_type&	  val	= value_type(),
+	explicit vector(const allocator_type& alloc = allocator_type()); // default
+	explicit vector(size_type n, const value_type& val = value_type(),
 					const allocator_type& alloc = allocator_type()); // fill
-	template< typename _Iter >
-	vector(_Iter																  first,
-		   typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type last,
-		   const allocator_type&												  alloc = allocator_type()); // range
-	vector(const vector& x);								// copy
+
+	__template_input__ vector(
+	  _Input																										first,
+	  typename ft::enable_if< !ft::is_integral< _Input >::value && ft::is_iterator< _Input >::value, _Input >::type last,
+	  const allocator_type& alloc = std::allocator< typename ft::iterator_traits< _Input >::value_type >()); // range
+
+	vector(const vector& from); // copy
 	~vector();
-	vector& operator=(const vector& x);
+	vector& operator=(const vector& from);
 
 	/**
 	 * * [ allocator ] -----------------------------------------------------------------------------
@@ -112,66 +116,56 @@ class vector {
 	 * * [ modifiers ] -----------------------------------------------------------------------------
 	 */
 	template< typename InputIterator >
-	void	 assign(InputIterator first, InputIterator last);
-	void	 assign(size_type n, const value_type& u);
-	void	 push_back(const value_type& x);
-	void	 pop_back();
-	iterator insert(const_iterator position, const value_type& x);
-	iterator insert(const_iterator position, size_type n, const value_type& x);
-	template< typename InputIterator >
-	iterator insert(const_iterator position, InputIterator first, InputIterator last);
-	iterator erase(iterator position);
-	iterator erase(iterator first, iterator last);
-	void	 clear();
-	void	 swap(vector& x);
-	void	 resize(size_type sz, value_type c = value_type());
-	bool	 __invariants() const;
+	void					   assign(InputIterator first, InputIterator last);
+	void					   assign(size_type n, const value_type& u);
+	void					   push_back(const value_type& x);
+	void					   pop_back();
+	iterator				   insert(const_iterator position, const value_type& x);
+	iterator				   insert(const_iterator position, size_type n, const value_type& x);
+	__template_iter__ iterator insert(const_iterator position, _Iter first, _Iter last);
+	iterator				   erase(iterator position);
+	iterator				   erase(iterator first, iterator last);
+	void					   clear();
+	void					   swap(vector& x);
+	void					   resize(size_type sz, value_type c = value_type());
 
 	/**
 	 * * [ internal workhorse ] --------------------------------------------------------------------
 	 */
+	protected:
+	inline bool invariants_size__() const;
+	inline bool invariants_capacity__() const;
 }; /* class vector */
 
 /**
  * * [ non-member function overloads ] -------------------------------------------------------------
  */
-template< typename _Tp, typename _Allocator >
-bool
-operator==(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
-template< typename _Tp, typename _Allocator >
-bool
-operator!=(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
-template< typename _Tp, typename _Allocator >
-bool
-operator<(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
-template< typename _Tp, typename _Allocator >
-bool
-operator<=(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
-template< typename _Tp, typename _Allocator >
-bool
-operator>(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
-template< typename _Tp, typename _Allocator >
-bool
-operator>=(const ft::vector< _Tp, _Allocator >& lhs, const ft::vector< _Tp, _Allocator >& rhs);
-template< typename _Tp, typename _Allocator >
-void
-swap(ft::vector< _Tp, _Allocator >& lhs, ft::vector< _Tp, _Allocator >& rhs);
+__template__
+__return__(bool)
+operator==(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs);
+__template__
+__return__(bool)
+operator!=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs);
+__template__
+__return__(bool)
+operator<(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs);
+__template__
+__return__(bool)
+operator<=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs);
+__template__
+__return__(bool)
+operator>(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs);
+__template__
+__return__(bool)
+operator>=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs);
+__template__
+__return__(void) swap(ft::vector< _Tp, _Alloc >& lhs, ft::vector< _Tp, _Alloc >& rhs);
 
 /**
  * * [ default form] -------------------------------------------------------------------------------
  */
-template< typename _Tp, typename _Allocator >
-THIS::vector() // default
-  try
-  : __alloc(allocator_type())
-  , __size(0)
-  , __capacity(0)
-  , __data(NULL) {
-	LOG_("empty default constructor");
-} catch (...) {
-}
-template< typename _Tp, typename _Allocator >
-THIS::vector(const allocator_type& alloc) // default
+__template__
+__vector__::vector(const allocator_type& alloc) // default
   try
   : __alloc(alloc)
   , __size(0)
@@ -180,10 +174,11 @@ THIS::vector(const allocator_type& alloc) // default
 	LOG_("default constructor");
 } catch (...) {
 }
-template< typename _Tp, typename _Allocator >
-THIS::vector(size_type			   n,
-			 const value_type&	   val,
-			 const allocator_type& alloc) // fill
+
+__template__
+__vector__::vector(size_type			 n,
+				   const value_type&	 val,
+				   const allocator_type& alloc) // fill
   try
   : __alloc(alloc)
   , __size(n)
@@ -201,44 +196,73 @@ THIS::vector(size_type			   n,
 } catch (const std::exception& e) {
 } catch (...) {
 }
-template< typename _Tp, typename _Allocator >
-template< typename _Iter >
-THIS::vector(_Iter																	first,
-			 typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type last,
-			 const allocator_type&													alloc) // range
+
+__template__ __template_input__
+__vector__::vector(_Input																										 first,
+				   typename ft::enable_if< !ft::is_integral< _Input >::value && ft::is_iterator< _Input >::value, _Input >::type last,
+				   const allocator_type& alloc) // range
   try
   : __alloc(alloc)
   , __size(0)
   , __capacity(0)
   , __data(NULL) {
-	LOG_("range constructor");
+	LOG_("range constructor : input iterator");
 	(void)first;
 	(void)last;
 } catch (const std::exception& e) {
 	std::cerr << e.what() << std::endl;
 } catch (...) {
 }
-template< typename _Tp, typename _Allocator >
-THIS::vector(const vector& x) // copy
+
+// __template__ __template_iter__
+// __vector__::vector(typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type first,
+// 				   _Iter																  last,
+// 				   const allocator_type&												  alloc) // range
+//   try
+//   : __alloc(alloc)
+//   , __size(0)
+//   , __capacity(0)
+//   , __data(NULL) {
+// 	LOG_("range constructor");
+// 	(void)first;
+// 	(void)last;
+// } catch (const std::exception& e) {
+// 	std::cerr << e.what() << std::endl;
+// } catch (...) {
+// }
+__template__
+__vector__::vector(const vector& from) // copy
   try
   : __alloc(allocator_type())
   , __size(0)
   , __capacity(0)
   , __data(NULL) {
 } catch (...) {
-	(void)x;
+	(void)from;
 }
-template< typename _Tp, typename _Allocator >
-THIS&
-THIS::operator=(const vector& x) {
-	(void)x;
+
+__template__
+__return__(__vector__&) __vector__::operator=(const vector& from) {
+	LOG_("copy assignment operator");
+	if (this != &from) {
+		this->~vector();
+		if (from.size() > 0) { // TODO: make to __function, check how to  unalloc copy
+			__data	   = __alloc.allocate(from.size() * sizeof(value_type));
+			__capacity = from.size();
+			__size	   = from.size();
+			for (size_type i = 0; i < from.size(); ++i) {
+				__alloc.construct(__data + i, from[i]);
+			}
+		}
+	}
+	return *this;
 }
-template< typename _Tp, typename _Allocator >
-THIS::~vector() {
+__template__
+__return__() __vector__::~vector() {
 	if (std::uncaught_exceptions() == true) {
-		LOG_("destructor called during stack unwinding");
+		LOG_("called during stack unwinding");
 	} else {
-		LOG_("destructor called normally");
+		LOG_("called normally");
 	}
 	if (__data) {
 		clear();
@@ -253,6 +277,25 @@ THIS::~vector() {
 /**
  * * [ element access ] ----------------------------------------------------------------------------
  */
+__template__
+__return__() typename __vector__::reference __vector__::operator[](size_type n) {
+	if (n >= __size) {
+		// throw std::out_of_range("vector::operator[]");
+		throw std::range_error("vector::operator[]");
+	}
+	return __data[n];
+}
+
+__template__
+__return__() typename __vector__::const_reference __vector__::operator[](size_type n) const {
+	if (n >= __size) {
+		// throw std::out_of_range("vector::operator[]");
+		throw std::range_error("vector::operator[]");
+	}
+	return __data[n];
+}
+// const_reference
+// operator[](size_type n) const;
 
 /**
  * * [ iterators ] ---------------------------------------------------------------------------------
@@ -269,9 +312,9 @@ THIS::~vector() {
 /**
  * * [ capacity ] ----------------------------------------------------------------------------------
  */
-// template< typename _Tp, typename _Allocator >
+// __template__
 // void
-// THIS::reserve(size_type n) {
+// __vector__::reserve(size_type n) {
 // 	if (n > max_size()) {
 // 		throw std::length_error("vector::reserve");
 // 	}
@@ -286,14 +329,11 @@ THIS::~vector() {
 /**
  * * [ modifiers ] ---------------------------------------------------------------------------------
  */
-template< typename _Tp, typename _Allocator >
-void
-THIS::clear() {
-	size_type i = __size;
-	while (i--) {
-		__alloc.destroy(__data + i);
+__template__
+__return__(void) __vector__::clear() {
+	while (__size--) {
+		__alloc.destroy(&__data[__size]);
 	}
-	__size = 0;
 }
 
 /**
