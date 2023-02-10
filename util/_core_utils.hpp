@@ -76,8 +76,11 @@ template<>
 struct yoma_assert< true > {
 	yoma_assert(const char*) {}
 };
-
+#ifdef LOG
 #define static_assert_(expression, message) yoma_assert< (expression) >(message)
+#else
+#define static_assert_(expression, message)
+#endif
 
 /**
  * * [ own log ] -----------------------------------------------------------------------------------
@@ -92,6 +95,8 @@ log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GRE
 #else
 	(void)title;
 	(void)context;
+	(void)c1;
+	(void)c2;
 #endif
 }
 
@@ -102,8 +107,10 @@ log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GRE
 #define __template_iter__ template< typename _Iter >
 #define __return__(type)  type
 
+#define _es_no_safety_
 #define _es_noexcept_ throw()
-#define _es_strong_
 #define _es_basic_
+#define _es_strong_
+#define _ub_
 
 #endif

@@ -41,11 +41,25 @@ struct test_allocator {
 	typedef const T&  const_reference;
 };
 
+int
+f(int n = 2) try {
+	++n; // increments the function parameter
+	throw n;
+} catch (...) {
+	++n; // n is in scope and still refers to the function parameter
+	assert(n == 4);
+	return n;
+}
+
 void
 main2() {
+	std::cout << f(2) << std::endl;
+	std::distance(std::vector< int >::iterator(), std::vector< int >::iterator());
 	try {
-		// ft::vector< int, test_allocator< int > > toiearnsite;
-		// std::vector< int, test_allocator< int > > toiearnsite;
+		std::vector< int > v(10, 1);
+
+		std::cout << v.at(9) << std::endl;
+		std::cout << v.at(10) << std::endl;
 	} catch (const char* e) {
 		std::cout << e << std::endl;
 	} catch (std::exception& e) {
