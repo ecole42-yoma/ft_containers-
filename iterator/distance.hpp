@@ -18,7 +18,7 @@ __distance(_InputIter __first, _InputIter __last, input_iterator_tag) {
 template< class _RandIter >
 inline typename iterator_traits< _RandIter >::difference_type
 __distance(_RandIter __first, _RandIter __last, random_access_iterator_tag) {
-	return __last - __first;
+	return (__last - __first);
 }
 
 template< class _InputIter >
