@@ -82,6 +82,8 @@ struct yoma_assert< true > {
 #define static_assert_(expression, message)
 #endif
 
+#define assert_(expression, message) assert(expression&& message)
+
 /**
  * * [ own log ] -----------------------------------------------------------------------------------
  */
