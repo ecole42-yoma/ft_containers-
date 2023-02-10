@@ -10,6 +10,7 @@
 #include "iterator/has_iterator_x.hpp"
 #include "iterator/is_iterator_x.hpp"
 #include "iterator/iterator_tag.hpp"
+#include "type/allocator_traits.hpp"
 #include "type/is_convertible.hpp"
 #include "type/is_same.hpp"
 #include "type/remove_cv.hpp"
@@ -28,12 +29,40 @@ struct test_input_iterator {
 	typedef T*						 pointer;
 	typedef T&						 reference;
 };
+template< typename T >
+struct test_allocator {
+	typedef T value_type;
+
+	typedef size_t	  size_type;
+	typedef ptrdiff_t difference_type;
+	typedef T*		  pointer;
+	typedef const T*  const_pointer;
+	typedef T&		  reference;
+	typedef const T&  const_reference;
+};
 
 void
 main2() {
+	try {
+		// ft::vector< int, test_allocator< int > > toiearnsite;
+		// std::vector< int, test_allocator< int > > toiearnsite;
+	} catch (const char* e) {
+		std::cout << e << std::endl;
+	} catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	} catch (...) {
+		std::cout << "unknown error" << std::endl;
+	}
 
-	ft::vector< int > v(10, 42);
-	ft::vector< int > v2;
+	std::vector< int >	  vvvv;
+	std::allocator< int > temppppp;
+	ft::vector< int >	  v(10, 42);
+	ft::vector< int >	  v2;
+	if (ft::is_allocator< std::allocator< int > >::value) {
+		std::cout << "is allocator" << std::endl;
+	} else {
+		std::cout << "is not allocator" << std::endl;
+	}
 
 	v2 = v;
 	for (ft::vector< int >::iterator it = v2.begin(); it != v2.end(); ++it)
@@ -46,7 +75,7 @@ main2() {
 	for (ft::vector< int >::iterator it = v3.begin(); it != v3.end(); ++it)
 		std::cout << *it << std::endl;
 
-	std::cout << color__(RED) << "hi" << color__(RESET) << std::endl;
+	std::cout << color_(RED) << "hi" << color_(RESET) << std::endl;
 }
 
 void

@@ -54,7 +54,7 @@ typedef enum color_state {
 
 #include <string>
 inline std::string
-color__(color_state_e s) {
+color_(color_state_e s) {
 	switch (s) {
 #define XX(num, name, string) \
 	case name:                \
@@ -101,5 +101,9 @@ log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GRE
 #define __template__	  template< typename _Tp, typename _Alloc >
 #define __template_iter__ template< typename _Iter >
 #define __return__(type)  type
+
+#define _es_noexcept_ throw()
+#define _es_strong_
+#define _es_basic_
 
 #endif

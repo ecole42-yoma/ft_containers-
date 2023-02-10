@@ -18,8 +18,10 @@ struct __has_iterator_typedefs_work {
 	private:
 	typedef char (&__true)[1];
 	typedef char (&__false)[2];
+
 	template< typename _Up >
 	static __false test__(...);
+
 	template< typename _Up >
 	static __true test__(typename ft::void_t< typename _Up::iterator_category >::type* = 0,
 						 typename ft::void_t< typename _Up::difference_type >::type*   = 0,
@@ -48,8 +50,10 @@ struct __has_iterator_category_work {
 	private:
 	typedef char (&__true)[1];
 	typedef char (&__false)[2];
+
 	template< typename _Up >
 	static __false test__(...);
+
 	template< typename _Up >
 	static __true test__(typename _Up::iterator_category* = NULL);
 

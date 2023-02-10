@@ -6,6 +6,7 @@
 #include "remove_cv.hpp"
 
 #define __template_empty__ template<>
+
 namespace ft {
 
 template< typename _Tp >
@@ -49,4 +50,7 @@ template< typename _Tp >
 struct is_integral_t : __is_integral_work< typename ft::remove_cv< _Tp >::type >::type {};
 
 }
+
+#undef __template_empty__
+
 #endif
