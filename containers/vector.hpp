@@ -24,11 +24,8 @@
 #include <iostream>
 
 #define __vector__			 vector< _Tp, _Alloc >
-#define __template__		 template< typename _Tp, typename _Alloc >
-#define __template_iter__	 template< typename _Iter >
 #define __template_input__	 template< typename _Input >
 #define __template_forward__ template< typename _Forward >
-#define __return__(type)	 type
 
 namespace ft {
 
@@ -133,8 +130,19 @@ class vector {
 	 * * [ internal workhorse ] --------------------------------------------------------------------
 	 */
 	protected:
-	inline bool invariants_size__() const;
-	inline bool invariants_capacity__() const;
+	inline bool				invariants_size__() const;
+	inline bool				invariants_capacity__() const;
+	__template_input__ void internal_iterator_construct__(
+	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
+								!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
+							  _Input >::type first,
+	  _Input								 last,
+	  const allocator_type&					 alloc);
+	__template_forward__ void internal_iterator_construct__(
+	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value, _Forward >::type first,
+	  _Forward																														  last,
+	  const allocator_type& alloc);
+
 }; /* class vector */
 
 /**
@@ -207,7 +215,8 @@ __vector__::vector(_Input																	first,
   , __size()
   , __capacity()
   , __data() {
-	LOG_("range constructor : input iterator");
+	LOG_("range constructor : iterator");
+	internal_iterator_construct__(first, last, alloc);
 	(void)first;
 	(void)last;
 } catch (const std::exception& e) {
@@ -326,6 +335,33 @@ __return__(void) __vector__::clear() {
 /**
  * * [ internal workhorse ] ------------------------------------------------------------------------
  */
+__template__ __template_input__ void
+__vector__::internal_iterator_construct__(
+  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
+							!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
+						  _Input >::type first,
+  _Input								 last,
+  const allocator_type&					 alloc) {
+	LOG_C_("range constructor : input iterator", B_COLOR_YELLOW);
+	(void)first;
+	(void)last;
+	(void)alloc;
+}
+__template__ __template_forward__ void
+__vector__::internal_iterator_construct__(
+  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value, _Forward >::type first,
+  _Forward																														  last,
+  const allocator_type&																											  alloc) {
+	LOG_C_("range constructor : forward iterator", B_COLOR_YELLOW);
+	(void)first;
+	(void)last;
+	(void)alloc;
+}
 
 } /* namespace ft */
+
+#undef __vector__
+#undef __template_input__
+#undef __template_forward__
+
 #endif /* __VECTOR_HPP__ */
