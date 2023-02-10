@@ -54,7 +54,7 @@ f(int n = 2) try {
 void
 main2() {
 	std::cout << f(2) << std::endl;
-	std::distance(std::vector< int >::iterator(), std::vector< int >::iterator());
+	// std::distance(std::vector< int >::iterator(), std::vector< int >::iterator());
 	try {
 		std::vector< int > v(10, 1);
 

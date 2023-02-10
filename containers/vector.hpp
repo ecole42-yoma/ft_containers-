@@ -28,6 +28,8 @@
 #define __vector_base__		 in_vector_base< _Tp, _Alloc >
 #define __template_input__	 template< typename _Input >
 #define __template_forward__ template< typename _Forward >
+#define __template_up__		 template< typename _Up >
+#define __template_ptr__	 template< typename _Ptr >
 
 namespace ft {
 
@@ -61,7 +63,7 @@ class in_vector_base {
 	pointer		   __end_capacity;
 	allocator_type __alloc;
 
-	explicit in_vector_base() _es_noexcept_;
+	explicit in_vector_base(const allocator_type& alloc = allocator_type()) _es_noexcept_;
 	explicit in_vector_base(const size_type& n) _es_noexcept_;
 	~in_vector_base() _es_noexcept_;
 
@@ -76,10 +78,11 @@ class in_vector_base {
 };
 
 __template__
-__vector_base__::in_vector_base() _es_noexcept_
+__vector_base__::in_vector_base(const allocator_type& alloc) _es_noexcept_
   : __begin(NULL)
   , __end(NULL)
-  , __end_capacity(NULL) {
+  , __end_capacity(NULL)
+  , __alloc(alloc) {
 	LOG_("constuctor in_vector_base");
 }
 
@@ -157,6 +160,7 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 
 	/**
 	 * * [ default form] ---------------------------------------------------------------------------
+	 * TODO - not done yet
 	 */
 	public:
 	explicit vector(const allocator_type& alloc = allocator_type()) _es_strong_ _ub_; // default
@@ -195,16 +199,17 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	 * * [ iterators ] -----------------------------------------------------------------------------
 	 */
 	iterator			   begin() _es_noexcept_ { return iterator(this->__begin); }
-	iterator			   end() _es_noexcept_ { return iterator(this->__end); }
 	const_iterator		   begin() const _es_noexcept_ { return const_iterator(this->__begin); }
+	iterator			   end() _es_noexcept_ { return iterator(this->__end); }
 	const_iterator		   end() const _es_noexcept_ { return const_iterator(this->__end); }
-	reverse_iterator	   rbegin() _es_noexcept_;
-	reverse_iterator	   rend() _es_noexcept_;
-	const_reverse_iterator rbegin() const _es_noexcept_;
-	const_reverse_iterator rend() const _es_noexcept_;
+	reverse_iterator	   rbegin() _es_noexcept_ { return reverse_iterator(end()); }
+	const_reverse_iterator rbegin() const _es_noexcept_ { return const_reverse_iterator(end()); }
+	reverse_iterator	   rend() _es_noexcept_ { return reverse_iterator(begin()); }
+	const_reverse_iterator rend() const _es_noexcept_ { return const_reverse_iterator(begin()); }
 
 	/**
 	 * * [ capacity ] ------------------------------------------------------------------------------
+	 * TODO - reserve
 	 */
 	size_type size() const _es_noexcept_ { return this->__end - this->__begin; }
 	size_type max_size() const _es_noexcept_ { return this->__alloc.max_size() / sizeof(value_type); }
@@ -214,6 +219,7 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 
 	/**
 	 * * [ modifiers ] -----------------------------------------------------------------------------
+	 * TODO --
 	 */
 	__template_input__ void	   assign(_Input first, _Input last) _es_basic_ _ub_;
 	void					   assign(size_type n, const value_type& u) _es_basic_ _ub_;
@@ -232,11 +238,17 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	 * * [ private workhorse ] ---------------------------------------------------------------------
 	 */
 	private:
-	inline bool invariants_size__() const;
+	inline bool invariants_size__() const { return this->__begin >= this->__end; }
 	inline bool invariants_capacity__() const;
+
+	__template_up__ inline _Up*											data_ptr__(_Up* __ptr) _es_noexcept_;
+	__template_up__ inline _Up*											data_ptr__(_Up* __ptr) const _es_noexcept_;
+	__template_ptr__ inline typename __vector_base__::value_type*		data_ptr__(_Ptr __ptr);
+	__template_ptr__ inline const typename __vector_base__::value_type* data_ptr__(_Ptr __ptr) const;
 
 	/**
 	 * * [ internal workhorse ] --------------------------------------------------------------------
+	 * TODO iterator_construct
 	 */
 	private:
 	__template_input__ void internal_iterator_construct__(
@@ -365,17 +377,67 @@ __return__() __vector__::~vector() _es_noexcept_ {
  * * [ element access ] ----------------------------------------------------------------------------
  */
 __template__
-__return__() typename __vector__::reference __vector__::operator[](size_type n) _es_noexcept_ _ub_ {
-	LOG_("vector: operator[]");
-	static_assert_(n < size(), "vector: operator[] basic version: index out of bounds");
+__return__() typename __vector__::reference __vector__::at(size_type n) throw(std::out_of_range) _es_strong_ {
+	LOG_("vector: at");
+	if (n >= size()) {
+		throw std::out_of_range("vector : at : index out of bounds");
+	}
 	return this->__begin[n];
 }
-
+__template__
+__return__() typename __vector__::const_reference __vector__::at(size_type n) const
+  throw(std::out_of_range) _es_strong_ {
+	LOG_("vector: at [const]");
+	if (n >= size()) {
+		throw std::out_of_range("vector : at [const]: index out of bounds");
+	}
+	return this->__begin[n];
+}
+__template__
+__return__() typename __vector__::reference __vector__::operator[](size_type n) _es_noexcept_ _ub_ {
+	LOG_("vector: operator[]");
+	static_assert_(n < size(), "vector : operator[] : index out of bounds");
+	return this->__begin[n];
+}
 __template__
 __return__() typename __vector__::const_reference __vector__::operator[](size_type n) const _es_noexcept_ _ub_ {
-	LOG_("vector: operator[] const version");
-	static_assert_(n < size(), "vector: operator[] const version: index out of bounds");
+	LOG_("vector: operator[] [const]");
+	static_assert_(n < size(), "vector : operator[] [const] : index out of bounds");
 	return this->__begin[n];
+}
+__template__
+__return__() typename __vector__::reference __vector__::front() _es_noexcept_ _ub_ {
+	LOG_("vector: front");
+	static_assert_(!empty(), "vector : front : called for empty vector");
+	return *this->__begin;
+}
+__template__
+__return__() typename __vector__::const_reference __vector__::front() const _es_noexcept_ _ub_ {
+	LOG_("vector: front [const]");
+	static_assert_(!empty(), "vector : front [const] : called for empty vector");
+	return *this->__begin;
+}
+__template__
+__return__() typename __vector__::reference __vector__::back() _es_noexcept_ _ub_ {
+	LOG_("vector: back ");
+	static_assert_(!empty(), "vector : back  : called for empty vector");
+	return *(this->__end - 1);
+}
+__template__
+__return__() typename __vector__::const_reference __vector__::back() const _es_noexcept_ _ub_ {
+	LOG_("vector: back [const]");
+	static_assert_(!empty(), "vector : back [const] : called for empty vector");
+	return *(this->__end - 1);
+}
+__template__
+__return__() typename __vector__::value_type* __vector__::data() _es_noexcept_ {
+	LOG_("vector: data");
+	return data_ptr_(this->__begin);
+}
+__template__
+__return__() const typename __vector__::value_type* __vector__::data() const _es_noexcept_ {
+	LOG_("vector: data [const]");
+	return data_ptr_(this->__begin);
 }
 
 /**
@@ -420,6 +482,26 @@ __return__(void) __vector__::clear() _es_noexcept_ {
 /**
  * * [ private workhorse ] -------------------------------------------------------------------------
  */
+__template__ template< typename _Up >
+inline _Up*
+__vector__::data_ptr__(_Up* __ptr) _es_noexcept_ {
+	return __ptr;
+}
+__template__ template< typename _Up >
+inline _Up*
+__vector__::data_ptr__(_Up* __ptr) const _es_noexcept_ {
+	return __ptr;
+}
+__template__ template< typename _Ptr >
+inline typename __vector_base__::value_type*
+__vector__::data_ptr__(_Ptr __ptr) {
+	return empty() ? (value_type*)0 : __ptr.operator->();
+}
+__template__ template< typename _Ptr >
+inline const typename __vector_base__::value_type*
+__vector__::data_ptr__(_Ptr __ptr) const {
+	return empty() ? (const value_type*)0 : __ptr.operator->();
+}
 
 /**
  * * [ internal workhorse ] ------------------------------------------------------------------------

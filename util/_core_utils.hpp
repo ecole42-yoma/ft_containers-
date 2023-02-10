@@ -113,4 +113,7 @@ log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GRE
 #define _es_strong_
 #define _ub_
 
+/**
+ * * [ data_ptr ] ----------------------------------------------------------------------------------
+ */
 #endif
