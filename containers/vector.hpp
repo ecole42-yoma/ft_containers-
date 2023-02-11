@@ -561,12 +561,12 @@ __return__() typename ft::void_t<
 							!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
 						  _Input >::type >::type __vector__::internal_assign__(_Input first, _Input last) {
 	LOG_C_("internal_assign : input iterator", B_COLOR_YELLOW);
-	_Input mid = this->__begin;
-	for (; mid != this->__end && first != last; ++mid, ++first) {
-		*mid = *first;
+	_Input copy_begin = this->__begin;
+	for (; copy_begin != this->__end && first != last; ++copy_begin, ++first) {
+		*copy_begin = *first;
 	}
 	if (first == last) {
-		this->destruct_at_end_(mid);
+		this->destruct_at_end_(copy_begin);
 	} else {
 		// range_insert..
 	}
