@@ -173,7 +173,7 @@ __return__(void) __vector_base__::swap_data_(in_vector_base& from) _es_noexcept_
 }
 
 /**
- * * [ vector container ] ---------------------------------------------------------------------------
+ * * [ vector container ] --------------------------------------------------------------------------
  * ! []
  * TODO - todo list
  * ? blue color
@@ -182,6 +182,9 @@ __return__(void) __vector_base__::swap_data_(in_vector_base& from) _es_noexcept_
  */
 template< typename _Tp, typename _Alloc = std::allocator< _Tp > >
 class vector : private in_vector_base< _Tp, _Alloc > {
+	/**
+	 * * [ default type] ---------------------------------------------------------------------------
+	 */
 	private:
 	typedef in_vector_base< _Tp, _Alloc > __base;
 
@@ -202,7 +205,6 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 
 	/**
 	 * * [ default form] ---------------------------------------------------------------------------
-	 * TODO - not done yet
 	 */
 	public:
 	explicit vector(const allocator_type& alloc = allocator_type()) _es_strong_ _ub_; // default
@@ -251,13 +253,11 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 
 	/**
 	 * * [ capacity ] ------------------------------------------------------------------------------
-	 * TODO - reserve
 	 */
 	inline size_type size() const _es_noexcept_ { return this->__end - this->__begin; }
 	inline size_type max_size() const _es_noexcept_ { return this->__alloc.max_size() / sizeof(value_type); }
 	inline size_type capacity() const _es_noexcept_ { return __base::capacity_(); }
 	inline bool		 empty() const _es_noexcept_ { return this->__begin == this->__end; };
-	void			 reserve(size_type n) throw(std::length_error) _es_strong_;
 
 	/**
 	 * * [ modifiers ] -----------------------------------------------------------------------------
@@ -276,6 +276,7 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	void					   clear() _es_noexcept_ { __base::clear_(); }
 	void					   swap(vector& x) _es_noexcept_ _ub_;
 	void					   resize(size_type sz, value_type c = value_type()) _es_strong_;
+	void					   reserve(size_type n) throw(std::length_error) _es_strong_;
 
 	/**
 	 * * [ private workhorse ] ---------------------------------------------------------------------
@@ -284,14 +285,18 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	inline bool invariants__() const _es_noexcept_;
 	size_type	recommend_size__(size_type new_size) const throw(std::length_error) _es_basic_;
 
-	__template_up__ inline _Up*											data_ptr__(_Up* ptr) _es_noexcept_;
-	__template_up__ inline _Up*											data_ptr__(_Up* ptr) const _es_noexcept_;
-	__template_ptr__ inline typename __vector_base__::value_type*		data_ptr__(_Ptr ptr) _es_noexcept_;
-	__template_ptr__ inline const typename __vector_base__::value_type* data_ptr__(_Ptr ptr) const _es_noexcept_;
+	__template_up__ inline _Up* data_ptr__(_Up* ptr) _es_noexcept_ { return ptr; }
+	__template_up__ inline _Up* data_ptr__(_Up* ptr) const _es_noexcept_ { return ptr; }
+	__template_ptr__ inline typename __vector_base__::value_type* data_ptr__(_Ptr ptr) _es_noexcept_ {
+		return empty() ? (value_type*)0 : ptr.operator->();
+	}
+	__template_ptr__ inline const typename __vector_base__::value_type* data_ptr__(_Ptr ptr) const _es_noexcept_ {
+		return empty() ? (const value_type*)0 : ptr.operator->();
+	}
 
 	/**
 	 * * [ internal workhorse ] --------------------------------------------------------------------
-	 * TODO iterator_construct
+	 * TODO Input_iterator case
 	 */
 	private:
 	__template_input__ typename ft::void_t<
@@ -402,6 +407,7 @@ __return__(__vector__&) __vector__::operator=(const vector& from) _es_basic_ _ub
 	}
 	return *this;
 }
+
 __template__
 __return__() __vector__::~vector() _es_noexcept_ {
 	if (std::uncaught_exceptions() == true) {
@@ -410,10 +416,6 @@ __return__() __vector__::~vector() _es_noexcept_ {
 		LOG_("called normally");
 	}
 }
-
-/**
- * * [ allocator ] ---------------------------------------------------------------------------------
- */
 
 /**
  * * [ element access ] ----------------------------------------------------------------------------
@@ -483,35 +485,6 @@ __return__() const typename __vector__::value_type* __vector__::data() const _es
 }
 
 /**
- * * [ iterators ] ---------------------------------------------------------------------------------
- */
-// reverse_iterator
-// rbegin();
-// reverse_iterator
-// rend();
-// const_reverse_iterator
-// rbegin() const;
-// const_reverse_iterator
-// rend() const;
-
-/**
- * * [ capacity ] ----------------------------------------------------------------------------------
- */
-// __template__
-// void
-// __vector__::reserve(size_type n) {
-// 	if (n > max_size()) {
-// 		throw std::length_error("vector::reserve");
-// 	}
-// 	if (n > capacity()) {
-// 		try {
-// 		} catch (const std::exception& e) {
-// 		} catch (...) {
-// 		}
-// 	}
-// }
-
-/**
  * * [ modifiers ] ---------------------------------------------------------------------------------
  */
 
@@ -552,33 +525,13 @@ __return__(bool) __vector__::invariants__() const _es_noexcept_ {
 	}
 	return true;
 }
-__template__ typename __vector__::size_type
-__vector__::recommend_size__(size_type new_size) const throw(std::length_error) _es_basic_ {
+__template__
+__return__() typename __vector__::size_type __vector__::recommend_size__(size_type new_size) const
+  throw(std::length_error) _es_basic_ {
 	if (new_size > max_size()) {
 		throw std::length_error("vector: recommend_size__ : length_error");
 	}
 	return _VSTD::max< size_type >(2 * capacity(), new_size);
-}
-
-__template__ template< typename _Up >
-inline _Up*
-__vector__::data_ptr__(_Up* ptr) _es_noexcept_ {
-	return ptr;
-}
-__template__ template< typename _Up >
-inline _Up*
-__vector__::data_ptr__(_Up* ptr) const _es_noexcept_ {
-	return ptr;
-}
-__template__ template< typename _Ptr >
-inline typename __vector_base__::value_type*
-__vector__::data_ptr__(_Ptr ptr) _es_noexcept_ {
-	return empty() ? (value_type*)0 : ptr.operator->();
-}
-__template__ template< typename _Ptr >
-inline const typename __vector_base__::value_type*
-__vector__::data_ptr__(_Ptr ptr) const _es_noexcept_ {
-	return empty() ? (const value_type*)0 : ptr.operator->();
 }
 
 /**
@@ -636,7 +589,10 @@ __return__() typename ft::void_t<
 } /* namespace ft */
 
 #undef __vector__
+#undef __vector_base__
 #undef __template_input__
 #undef __template_forward__
+#undef __template_up__
+#undef __template_ptr__
 
 #endif /* __VECTOR_HPP__ */

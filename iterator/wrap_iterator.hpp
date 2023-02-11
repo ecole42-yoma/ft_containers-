@@ -38,20 +38,24 @@ __template_iter__ class _wrap_iter {
 		++__itr;
 		return *this;
 	}
+
 	_wrap_iter operator++(int) _es_noexcept_ {
 		_wrap_iter temp(*this);
 		++(*this);
 		return temp;
 	}
+
 	_wrap_iter operator--() _es_noexcept_ {
 		--__itr;
 		return *this;
 	}
+
 	_wrap_iter operator--(int) _es_noexcept_ {
 		_wrap_iter temp(*this);
 		--(*this);
 		return temp;
 	}
+
 	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return *this + n; }
 	_wrap_iter operator+=(difference_type n) _es_noexcept_ { return *this += n; }
 	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return *this + (-n); }
@@ -67,51 +71,74 @@ __template_iter__ class _wrap_iter {
 
 }; // class _wrap_iter
 
-__template_iter1__ bool
+__template_iter1__
+__return__() inline bool
 operator==(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	return lhs.base() == rhs.base();
 }
-__template_iter2__ bool
+
+__template_iter2__
+__return__() inline bool
 operator==(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return lhs.base() == rhs.base();
 }
-__template_iter1__ bool
+
+__template_iter1__
+__return__() inline bool
 operator<(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	return lhs.base() < rhs.base();
 }
-__template_iter2__ bool
+
+__template_iter2__
+__return__() inline bool
 operator<(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return lhs.base() < rhs.base();
 }
-__template_iter1__ bool
+
+__template_iter1__
+__return__() inline bool
 operator!=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	return !(lhs == rhs);
 }
-__template_iter2__ bool
+
+__template_iter2__
+__return__() inline bool
 operator!=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return !(lhs == rhs);
 }
-__template_iter1__ bool
+
+__template_iter1__
+__return__() inline bool
 operator>(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	return rhs < lhs;
 }
-__template_iter2__ bool
+
+__template_iter2__
+__return__() inline bool
 operator>(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return rhs < lhs;
 }
-__template_iter1__ bool
+
+__template_iter1__
+__return__() inline bool
 operator>=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	return !(lhs < rhs);
 }
-__template_iter2__ bool
+
+__template_iter2__
+__return__() inline bool
 operator>=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return !(lhs < rhs);
 }
-__template_iter1__ bool
+
+__template_iter1__
+__return__() inline bool
 operator<=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	return !(rhs < lhs);
 }
-__template_iter2__ bool
+
+__template_iter2__
+__return__() inline bool
 operator<=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return !(rhs < lhs);
 }

@@ -56,7 +56,11 @@ MEM			=	-fsanitize=memory -fsanitize-memory-track-origins \
 				-fPIE -pie -fno-omit-frame-pointer
 LEAK		=	-fsanitize=leak
 
-CXXFLAGS 	+= $(DEBUG) $(SNTZ)
+# MEM_TEST
+ifdef MEM_TEST
+	CXXFLAGS 	+= $(DEBUG) $(SNTZ)
+endif
+
 
 #==============================================================================
 #	Make Part

@@ -68,7 +68,14 @@ main2() {
 		std::cout << "unknown error" << std::endl;
 	}
 
-	std::vector< int >	  vvvv;
+	std::vector< int > vvvv;
+	vvvv = std::vector< int >(10, 2);
+	std::cout << vvvv.size() << std::endl;
+
+	ft::vector< int > yoma;
+	yoma = ft::vector< int >(10, 2);
+	std::cout << yoma.size() << std::endl;
+
 	std::allocator< int > temppppp;
 	ft::vector< int >	  v(10, 42);
 	ft::vector< int >	  v2;
