@@ -53,49 +53,21 @@ f(int n = 2) try {
 
 void
 main2() {
-	std::cout << f(2) << std::endl;
-	// std::distance(std::vector< int >::iterator(), std::vector< int >::iterator());
-	try {
-		std::vector< int > v(10, 1);
+	ft::vector< int > a(10, 2);
+	ft::vector< int > three(33, 3);
+	// std::vector< int > a(10, 2);
 
-		std::cout << v.at(9) << std::endl;
-		std::cout << v.at(10) << std::endl;
-	} catch (const char* e) {
-		std::cout << e << std::endl;
-	} catch (std::exception& e) {
-		std::cout << e.what() << std::endl;
-	} catch (...) {
-		std::cout << "unknown error" << std::endl;
-	}
+	std::cout << a.size() << std::endl;
+	std::cout << a.capacity() << std::endl;
+	std::cout << a.max_size() << std::endl;
+	std::cout << a[9] << std::endl;
 
-	std::vector< int > vvvv;
-	vvvv = std::vector< int >(10, 2);
-	std::cout << vvvv.size() << std::endl;
-
-	ft::vector< int > yoma;
-	yoma = ft::vector< int >(10, 2);
-	std::cout << yoma.size() << std::endl;
-
-	std::allocator< int > temppppp;
-	ft::vector< int >	  v(10, 42);
-	ft::vector< int >	  v2;
-	if (ft::is_allocator< std::allocator< int > >::value) {
-		std::cout << "is allocator" << std::endl;
-	} else {
-		std::cout << "is not allocator" << std::endl;
-	}
-
-	v2 = v;
-	for (ft::vector< int >::iterator it = v2.begin(); it != v2.end(); ++it)
-		std::cout << *it << std::endl;
-
-	ft::vector< int >::iterator it	= v.begin();
-	ft::vector< int >::iterator it2 = v.end();
-
-	ft::vector< int > v3(it, it2);
-	for (ft::vector< int >::iterator it = v3.begin(); it != v3.end(); ++it)
-		std::cout << *it << std::endl;
-
+	// a.reserve(20);
+	a.assign(three.begin(), three.end());
+	std::cout << a.size() << std::endl;
+	std::cout << a.capacity() << std::endl;
+	std::cout << a.max_size() << std::endl;
+	std::cout << a[9] << std::endl;
 	std::cout << color_(RED) << "hi" << color_(RESET) << std::endl;
 }
 

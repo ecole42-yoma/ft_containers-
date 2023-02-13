@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+#include <memory>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -70,10 +72,12 @@ class in_vector_base {
 	~in_vector_base() _es_noexcept_;
 
 	void		allocate_(size_type n) throw(std::length_error) _es_strong_;
+	void		reserve_(size_type n) _es_strong_;
 	inline void deallocate_() _es_noexcept_;
 	void		destruct_at_end_(pointer new_last) _es_noexcept_;
 	void		construct_at_end_(size_type n, const_reference value = 0) _es_noexcept_; // TODO need to implement
 
+	inline size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
 	inline size_type capacity_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __begin); }
 	void			 clear_() _es_noexcept_ { destruct_at_end_(__begin); }
 
@@ -113,9 +117,9 @@ __vector_base__::in_vector_base(size_type n, const allocator_type& alloc) _es_st
 
 __template__ __vector_base__::~in_vector_base() _es_noexcept_ {
 	if (std::uncaught_exceptions() == true) {
-		LOG_("destructor ~in_vector_base - called during stack unwinding");
+		LOG_C_("destructor ~in_vector_base - called during stack unwinding", B_COLOR_RED);
 	} else {
-		LOG_("destructor ~in_vector_base - called normally");
+		LOG_C_("destructor ~in_vector_base - called normally", B_COLOR_BLUE);
 	}
 	deallocate_();
 }
@@ -131,8 +135,16 @@ __return__(void) __vector_base__::allocate_(size_type n) throw(std::length_error
 }
 
 __template__
-__return__() inline void __vector_base__::deallocate_() _es_noexcept_ {
+__return__(void) __vector_base__::reserve_(size_type n) _es_strong_ {
 	LOG_("in_vector_base");
+	__vector_base__ temp(n, __alloc);
+	temp.__end = std::uninitialized_copy(this->__begin, this->__end, temp.__begin);
+	this->swap_data_(temp);
+}
+
+__template__
+__return__() inline void __vector_base__::deallocate_() _es_noexcept_ {
+	LOG_C_("in_vector_base", B_COLOR_PURPLE);
 	if (__begin != NULL) {
 		clear_();
 		__alloc.deallocate(__begin, capacity_());
@@ -142,7 +154,7 @@ __return__() inline void __vector_base__::deallocate_() _es_noexcept_ {
 
 __template__
 __return__(void) __vector_base__::destruct_at_end_(pointer new_last) _es_noexcept_ {
-	LOG_("in_vector_base");
+	LOG_C_("in_vector_base", B_COLOR_PURPLE);
 	pointer soon_to_be_end = __end;
 	while (new_last != soon_to_be_end) {
 		__alloc.destroy(--soon_to_be_end);
@@ -156,20 +168,24 @@ __return__(void) __vector_base__::copy_data_(const in_vector_base& from) _es_noe
 	__begin		   = from.__begin;
 	__end		   = from.__end;
 	__end_capacity = from.__end_capacity;
+	__alloc		   = from.__alloc;
 }
 
 __template__
 __return__(void) __vector_base__::swap_data_(in_vector_base& from) _es_noexcept_ {
 	LOG_("in_vector_base");
-	pointer temp_begin		  = __begin;
-	pointer temp_end		  = __end;
-	pointer temp_end_capacity = __end_capacity;
-	__begin					  = from.__begin;
-	__end					  = from.__end;
-	__end_capacity			  = from.__end_capacity;
-	from.__begin			  = temp_begin;
-	from.__end				  = temp_end;
-	from.__end_capacity		  = temp_end_capacity;
+	pointer		   temp_begin		 = __begin;
+	pointer		   temp_end			 = __end;
+	pointer		   temp_end_capacity = __end_capacity;
+	allocator_type temp_alloc		 = __alloc;
+	__begin							 = from.__begin;
+	__end							 = from.__end;
+	__end_capacity					 = from.__end_capacity;
+	__alloc							 = from.__alloc;
+	from.__begin					 = temp_begin;
+	from.__end						 = temp_end;
+	from.__end_capacity				 = temp_end_capacity;
+	from.__alloc					 = temp_alloc;
 }
 
 /**
@@ -254,8 +270,10 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	/**
 	 * * [ capacity ] ------------------------------------------------------------------------------
 	 */
-	inline size_type size() const _es_noexcept_ { return this->__end - this->__begin; }
-	inline size_type max_size() const _es_noexcept_ { return this->__alloc.max_size() / sizeof(value_type); }
+	inline size_type size() const _es_noexcept_ { return __base::size_(); }
+	inline size_type max_size() const _es_noexcept_ {
+		return std::min< size_type >(this->__alloc.max_size(), std::numeric_limits< difference_type >::max());
+	}
 	inline size_type capacity() const _es_noexcept_ { return __base::capacity_(); }
 	inline bool		 empty() const _es_noexcept_ { return this->__begin == this->__end; };
 
@@ -296,54 +314,28 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 
 	/**
 	 * * [ internal workhorse ] --------------------------------------------------------------------
-	 * TODO Input_iterator case
 	 */
 	private:
 	__template_input__ typename ft::void_t<
 	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
 								!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
 							  _Input >::type >::type
-	internal_iterator_construct__(_Input first, _Input last);
+	internal_iterator_construct__(_Input first, _Input last, const allocator_type& alloc);
 	__template_forward__ typename ft::void_t<
 	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
 							  _Forward >::type >::type
-	internal_iterator_construct__(_Forward first, _Forward last);
+	internal_iterator_construct__(_Forward first, _Forward last, const allocator_type& alloc);
 	__template_input__ typename ft::void_t<
 	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
 								!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
 							  _Input >::type >::type
-	internal_assign__(_Input first, _Input last);
+	internal_assign__(_Input first, _Input last, const allocator_type& alloc);
 	__template_forward__ typename ft::void_t<
 	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
 							  _Forward >::type >::type
-	internal_assign__(_Forward first, _Forward last);
+	internal_assign__(_Forward first, _Forward last, const allocator_type& alloc);
 
 }; /* class vector */
-
-/**
- * * [ non-member function overloads ] -------------------------------------------------------------
- */
-__template__
-__return__(bool)
-operator==(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_;
-__template__
-__return__(bool)
-operator!=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_;
-__template__
-__return__(bool)
-operator<(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_;
-__template__
-__return__(bool)
-operator<=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_;
-__template__
-__return__(bool)
-operator>(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_;
-__template__
-__return__(bool)
-operator>=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_;
-
-__template__
-__return__(void) swap(ft::vector< _Tp, _Alloc >& lhs, ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ _ub_;
 
 /**
  * * [ default form] -------------------------------------------------------------------------------
@@ -379,7 +371,7 @@ __vector__::vector(_Input																	first,
 				   const allocator_type& alloc) _es_strong_ _ub_ // range
   try : __base(alloc) {
 	LOG_("range constructor : iterator");
-	internal_iterator_construct__(first, last);
+	internal_iterator_construct__(first, last, alloc);
 } catch (const std::exception& e) {
 	std::cerr << e.what() << std::endl;
 	throw;
@@ -403,7 +395,7 @@ __template__
 __return__(__vector__&) __vector__::operator=(const vector& from) _es_basic_ _ub_ {
 	LOG_("copy assignment operator");
 	if (this != &from) {
-		assign(from.begin(), from.end());
+		internal_assign__(from.begin(), from.end(), from.__alloc);
 	}
 	return *this;
 }
@@ -411,9 +403,9 @@ __return__(__vector__&) __vector__::operator=(const vector& from) _es_basic_ _ub
 __template__
 __return__() __vector__::~vector() _es_noexcept_ {
 	if (std::uncaught_exceptions() == true) {
-		LOG_("called during stack unwinding");
+		LOG_C_("called during stack unwinding", B_COLOR_RED);
 	} else {
-		LOG_("called normally");
+		LOG_C_("called normally", B_COLOR_BLUE);
 	}
 }
 
@@ -487,12 +479,11 @@ __return__() const typename __vector__::value_type* __vector__::data() const _es
 /**
  * * [ modifiers ] ---------------------------------------------------------------------------------
  */
-
 __template__ __template_input__
 __return__() typename ft::enable_if< ft::is_iterator< _Input >::value, void >::type
   __vector__::assign(_Input first, _Input last) _es_basic_ _ub_ {
 	LOG_("vector: assign (range)");
-	internal_assign__(first, last);
+	internal_assign__(first, last, this->__alloc);
 }
 __template__ void
 __vector__::assign(size_type n, const_reference value) _es_basic_ _ub_ {
@@ -510,6 +501,72 @@ __vector__::assign(size_type n, const_reference value) _es_basic_ _ub_ {
 		const size_type remain = size() - n;
 		std::advance(this->__end, -remain);
 		this->destruct_at_end_(this->__end);
+	}
+}
+
+// __template__
+// __return__(void) __vector__::push_back(const_reference x) _es_strong_ _ub_ {}
+
+// __template__
+// __return__(void) __vector__::pop_back() _es_noexcept_ _ub_ {}
+
+// __template__
+// __return__()
+//   typename __vector__::iterator __vector__::insert(const_iterator position, const_reference x) _es_strong_ _ub_ {}
+
+// __template__
+// __return__() typename __vector__::iterator __vector__::insert(const_iterator  position,
+// 															  size_type		  n,
+// 															  const_reference x) _es_strong_ _ub_ {}
+
+// __template__ __template_iter__
+// __return__()
+//   typename __vector__::iterator __vector__::insert(const_iterator position, _Iter first, _Iter last) _es_strong_ _ub_
+//   {}
+
+// __template__
+// __return__() typename __vector__::iterator __vector__::erase(iterator position) _es_basic_ _ub_ {}
+
+// __template__
+// __return__() typename __vector__::iterator __vector__::erase(iterator first, iterator last) _es_basic_ _ub_ {}
+
+__template__ void
+__vector__::swap(vector& x) _es_noexcept_ _ub_ {
+	std::swap(this->__begin, x.__begin);
+	std::swap(this->__end, x.__end);
+	std::swap(this->__end_capacity, x.__end_capacity);
+	std::swap(this->__alloc, x.__alloc);
+}
+
+__template__
+__return__(void) __vector__::resize(size_type sz, value_type c) _es_strong_ {
+	size_type current_size = size();
+	if (sz > current_size) {
+		if (sz > capacity()) {
+			vector temp(recommend_size__(sz), c);
+			this->swap(temp);
+		} else {
+		}
+	} else if (sz < current_size) {
+		this->destruct_at_end_(this->__begin + sz);
+	}
+}
+
+__template__ void
+__vector__::reserve(size_type n) throw(std::length_error) _es_strong_ {
+	if (n > max_size()) {
+		throw std::length_error("vector: reserve : length_error");
+	}
+	if (n > capacity()) {
+		try {
+			// vector temp(this->begin(), this->end(), allocator_type());
+			// pointer temp_begin = this->__alloc.allocate(recommend_size__(n));
+			// pointer temp_end   = std::uninitialized_copy(this->__begin, this->__end, temp_begin);
+			this->reserve_(recommend_size__(n));
+
+		} catch (...) {
+			// TODO : handle exception
+		}
 	}
 }
 
@@ -531,7 +588,10 @@ __return__() typename __vector__::size_type __vector__::recommend_size__(size_ty
 	if (new_size > max_size()) {
 		throw std::length_error("vector: recommend_size__ : length_error");
 	}
-	return _VSTD::max< size_type >(2 * capacity(), new_size);
+	if ((new_size * 2) > (max_size() * 0.5)) {
+		return max_size();
+	}
+	return std::max< size_type >(2 * capacity(), new_size);
 }
 
 /**
@@ -541,25 +601,28 @@ __template__ __template_input__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
 							!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
-						  _Input >::type >::type __vector__::internal_iterator_construct__(_Input first, _Input last) {
+						  _Input >::type >::type
+  __vector__::internal_iterator_construct__(_Input first, _Input last, const allocator_type& alloc) {
 	LOG_C_("internal_range constructor : input iterator", B_COLOR_YELLOW);
-	internal_assign__(first, last);
+	internal_assign__(first, last, alloc);
 }
 __template__ __template_forward__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
-						  _Forward >::type >::type __vector__::internal_iterator_construct__(_Forward first,
-																							 _Forward last) {
+						  _Forward >::type >::type
+  __vector__::internal_iterator_construct__(_Forward first, _Forward last, const allocator_type& alloc) {
 	LOG_C_("internal_range constructor : forward iterator", B_COLOR_YELLOW);
 	const size_type n = ft::distance(first, last);
 	this->allocate_(n);
-	internal_assign__(first, last);
+	internal_assign__(first, last, alloc);
 }
 __template__ __template_input__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
 							!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
-						  _Input >::type >::type __vector__::internal_assign__(_Input first, _Input last) {
+						  _Input >::type >::type __vector__::internal_assign__(_Input				 first,
+																			   _Input				 last,
+																			   const allocator_type& alloc) {
 	LOG_C_("internal_assign : input iterator", B_COLOR_YELLOW);
 	_Input copy_begin = this->__begin;
 	for (; copy_begin != this->__end && first != last; ++copy_begin, ++first) {
@@ -568,25 +631,76 @@ __return__() typename ft::void_t<
 	if (first == last) {
 		this->destruct_at_end_(copy_begin);
 	} else {
-		// range_insert..
+		(void)alloc;
+		// TODO: range_insert..
 	}
 }
 __template__ __template_forward__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
-						  _Forward >::type >::type __vector__::internal_assign__(_Forward first, _Forward last) {
+						  _Forward >::type >::type __vector__::internal_assign__(_Forward			   first,
+																				 _Forward			   last,
+																				 const allocator_type& alloc) {
 	LOG_C_("internal_assign : forward iterator", B_COLOR_YELLOW);
 	const size_type n = ft::distance(first, last);
 	if (n > capacity()) {
-		vector temp(first, last);
-		this->swap_data_(temp);
+		vector temp(first, last, alloc);
+		// this->swap_data_(temp);
+		this->swap(temp);
 	} else {
 		this->destruct_at_end_(this->__begin);
 		this->__end = std::uninitialized_copy(first, last, this->__begin);
 	}
 }
 
+/**
+ * * [ non-member function overloads ] -------------------------------------------------------------
+ */
+__template__
+__return__(bool)
+operator==(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
+	return lhs.size() == rhs.size() &&
+		   std::equal(lhs.begin(), lhs.end(), rhs.begin()); // TODO • ft::equal and/or ft::lexicographical_compare
+															//    ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+}
+__template__
+__return__(bool)
+operator!=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
+	return !(lhs == rhs);
+}
+__template__
+__return__(bool)
+operator<(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
+	return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	// return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	// TODO: ft::lexicographical_compare
+}
+__template__
+__return__(bool)
+operator<=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
+	return !(rhs < lhs);
+}
+__template__
+__return__(bool)
+operator>(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
+	return rhs < lhs;
+}
+__template__
+__return__(bool)
+operator>=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
+	return !(lhs < rhs);
+}
+
 } /* namespace ft */
+
+namespace std {
+
+__template__
+__return__() inline void swap(ft::__vector__& lhs, ft::__vector__& rhs) {
+	lhs.swap(rhs);
+}
+
+}
 
 #undef __vector__
 #undef __vector_base__
