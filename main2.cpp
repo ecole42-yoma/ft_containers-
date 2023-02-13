@@ -53,21 +53,42 @@ f(int n = 2) try {
 
 void
 main2() {
-	ft::vector< int > a(10, 2);
+	ft::vector< int > a;
+	a.push_back(1);
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.push_back(2);
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.push_back(3);
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.push_back(4);
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.push_back(4);
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.pop_back();
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.pop_back();
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.pop_back();
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.pop_back();
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	a.pop_back();
+	std::cout << a.size() << " / " << a.capacity() << std::endl;
+
 	ft::vector< int > three(33, 3);
 	// std::vector< int > a(10, 2);
 
 	std::cout << a.size() << std::endl;
 	std::cout << a.capacity() << std::endl;
 	std::cout << a.max_size() << std::endl;
-	std::cout << a[9] << std::endl;
+	// std::cout << a[9] << std::endl;
 
 	// a.reserve(20);
 	a.assign(three.begin(), three.end());
 	std::cout << a.size() << std::endl;
 	std::cout << a.capacity() << std::endl;
 	std::cout << a.max_size() << std::endl;
-	std::cout << a[9] << std::endl;
+	// std::cout << a[9] << std::endl;
 
 	a.resize(50, 5);
 	std::cout << a.size() << std::endl;
@@ -99,4 +120,5 @@ main(int argc, char** argv) {
 		atexit(check_leaks);
 	(void)argv;
 	main2();
+	main3();
 }

@@ -40,16 +40,18 @@ CXXFLAGS	+=	$(addprefix -std=, $(CXX_STD_FLAGS))
 FT_VERSION	=	03
 ifdef FT_VERSION
 	CXXFLAGS	+=	-D FT_VERSION=$(FT_VERSION)
-	CXXFLAGS	+=	-D LOG
 endif
 
 DEBUG_FLAG	+=	LOG
 DEBUG_FLAG	+=	DEBUG
+DEBUG_FLAG	+=	ASSERT
 ifdef DEBUG_FLAG
 	LOG	+=	$(addprefix -D , $(DEBUG_FLAG))
 else
 	LOG += -D NDEBUG
 endif
+
+CXXFLAGS 	+= $(LOG)
 
 DEBUG		=	-g
 SNTZ		=	-fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
@@ -57,7 +59,7 @@ MEM			=	-fsanitize=memory -fsanitize-memory-track-origins \
 				-fPIE -pie -fno-omit-frame-pointer
 LEAK		=	-fsanitize=leak
 
-# MEM_TEST
+MEM_TEST	=	on
 ifdef MEM_TEST
 	CXXFLAGS 	+= $(DEBUG) $(SNTZ)
 endif

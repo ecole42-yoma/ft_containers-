@@ -1,7 +1,5 @@
 #pragma once
 
-#include <limits>
-#include <memory>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -17,13 +15,16 @@
 #else
 #include "../algorithm/equal.hpp"
 #include "../algorithm/lexicographical_compare.hpp"
+
 #include "../iterator/_iterator_traits.hpp"
 #include "../iterator/distance.hpp"
 #include "../iterator/iterator.hpp"
 #include "../iterator/reverse_iterator.hpp"
 #include "../iterator/wrap_iterator.hpp"
+
 #include "../type/_type_traits.hpp"
 #include "../type/allocator_traits.hpp"
+
 #include "../util/_core_utils.hpp"
 #endif
 
@@ -141,8 +142,10 @@ __template__
 __return__(void) __vector_base__::reserve_(size_type n) _es_strong_ {
 	LOG_("in_vector_base");
 	__vector_base__ temp(n, __alloc);
-	temp.__end = std::uninitialized_copy(this->__begin, this->__end, temp.__begin);
-	this->swap_data_(temp);
+	if (n != 0) {
+		temp.__end = std::uninitialized_copy(this->__begin, this->__end, temp.__begin);
+		this->swap_data_(temp);
+	}
 }
 
 __template__
@@ -227,7 +230,7 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	typedef typename __base::reference			   reference;
 	typedef typename __base::const_reference	   const_reference;
 	typedef _wrap_iter< pointer >				   iterator;
-	typedef const _wrap_iter< pointer >			   const_iterator;
+	typedef _wrap_iter< const_pointer >			   const_iterator;
 	typedef ft::reverse_iterator< iterator >	   reverse_iterator;
 	typedef ft::reverse_iterator< const_iterator > const_reverse_iterator;
 
@@ -323,6 +326,9 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	__template_ptr__ inline const typename __vector_base__::value_type* data_ptr__(_Ptr ptr) const _es_noexcept_ {
 		return empty() ? (const value_type*)0 : ptr.operator->();
 	}
+
+	iterator	   make_iter__(pointer ptr) _es_noexcept_ { return iterator(ptr); }
+	const_iterator make_iter__(const_pointer ptr) const _es_noexcept_ { return const_iterator(ptr); }
 
 	/**
 	 * * [ internal workhorse ] --------------------------------------------------------------------
@@ -516,11 +522,21 @@ __vector__::assign(size_type n, const_reference value) _es_basic_ _ub_ {
 	}
 }
 
-// __template__
-// __return__(void) __vector__::push_back(const_reference x) _es_strong_ _ub_ {}
+__template__
+__return__(void) __vector__::push_back(const_reference x) _es_strong_ _ub_ {
+	LOG_("vector: push_back");
+	if (this->__end == this->__end_capacity) {
+		this->reserve_(recommend_size__(size() + 1));
+	}
+	this->construct_at_end_(1, x);
+}
 
-// __template__
-// __return__(void) __vector__::pop_back() _es_noexcept_ _ub_ {}
+__template__
+__return__(void) __vector__::pop_back() _es_noexcept_ _ub_ {
+	LOG_("vector: pop_back");
+	assert_((!empty()), "vector : pop_back : called for empty vector");
+	this->destruct_at_end_(this->__end - 1);
+}
 
 // __template__
 // __return__()
@@ -542,7 +558,7 @@ __return__() typename __vector__::iterator __vector__::erase(iterator position) 
 	assert_((position >= begin() && position < end()), "vector : erase [position] : invalid iterator");
 	pointer pin = this->__begin + (position - begin());
 	this->destruct_at_end_(std::copy(pin + 1, this->__end, pin));
-	return const_iterator(pin);
+	return make_iter__(pin);
 }
 
 __template__
@@ -554,11 +570,12 @@ __return__() typename __vector__::iterator __vector__::erase(iterator first, ite
 	if (first != last) {
 		this->destruct_at_end_(std::copy(pin + (last - first), this->__end, pin));
 	}
-	return const_iterator(pin);
+	return make_iter__(pin);
 }
 
 __template__ void
 __vector__::swap(vector& x) _es_noexcept_ _ub_ {
+	LOG_("vector: swap");
 	std::swap(this->__begin, x.__begin);
 	std::swap(this->__end, x.__end);
 	std::swap(this->__end_capacity, x.__end_capacity);
@@ -567,6 +584,7 @@ __vector__::swap(vector& x) _es_noexcept_ _ub_ {
 
 __template__
 __return__(void) __vector__::resize(size_type sz, value_type c) _es_strong_ {
+	LOG_("vector: resize");
 	size_type current_size = size();
 	if (sz > current_size) {
 		if (sz > capacity()) {
@@ -580,16 +598,13 @@ __return__(void) __vector__::resize(size_type sz, value_type c) _es_strong_ {
 
 __template__ void
 __vector__::reserve(size_type n) throw(std::length_error) _es_strong_ {
+	LOG_("vector: reserve");
 	if (n > max_size()) {
 		throw std::length_error("vector: reserve : length_error");
 	}
 	if (n > capacity()) {
 		try {
-			// vector temp(this->begin(), this->end(), allocator_type());
-			// pointer temp_begin = this->__alloc.allocate(recommend_size__(n));
-			// pointer temp_end   = std::uninitialized_copy(this->__begin, this->__end, temp_begin);
 			this->reserve_(recommend_size__(n));
-
 		} catch (...) {
 			// TODO : handle exception
 		}
@@ -601,6 +616,7 @@ __vector__::reserve(size_type n) throw(std::length_error) _es_strong_ {
  */
 __template__
 __return__(bool) __vector__::invariants__() const _es_noexcept_ {
+	LOG_C_("vector: invariants", B_COLOR_YELLOW);
 	if ((this->__begin == NULL && (this->__end != NULL || this->__end_capacity != NULL)) ||
 		(this->__begin > this->__end) || (this->__begin == this->__end_capacity) ||
 		(this->__end > this->__end_capacity)) {

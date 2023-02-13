@@ -76,13 +76,14 @@ template<>
 struct yoma_assert< true > {
 	yoma_assert(const char*) {}
 };
-#ifdef LOG
+
+#ifdef ASSERT
 #define static_assert_(expression, message) yoma_assert< (expression) >(message)
+#define assert_(expression, message)		assert(expression&& message)
 #else
 #define static_assert_(expression, message)
+#define assert_(expression, message)
 #endif
-
-#define assert_(expression, message) assert(expression&& message)
 
 /**
  * * [ own log ] -----------------------------------------------------------------------------------

@@ -67,7 +67,7 @@ __template_iter__ class _wrap_iter {
 	_wrap_iter(iterator_type itr) _es_noexcept_ : __itr(itr) {}
 
 	template< typename _Tp, typename _Alloc >
-	friend class vector; // NOTE: WHAT IS THIS FOR?
+	friend class vector;
 
 }; // class _wrap_iter
 
