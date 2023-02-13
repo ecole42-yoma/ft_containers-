@@ -56,12 +56,12 @@ __template_iter__ class _wrap_iter {
 		return temp;
 	}
 
-	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return *this + n; }
-	_wrap_iter operator+=(difference_type n) _es_noexcept_ { return *this += n; }
-	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return *this + (-n); }
-	_wrap_iter operator-=(difference_type n) _es_noexcept_ { return *this += (-n); }
+	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return base() + n; }
+	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return base() + (-n); }
+	_wrap_iter operator+=(difference_type n) _es_noexcept_ { return base() += n; }
+	_wrap_iter operator-=(difference_type n) _es_noexcept_ { return base() += (-n); }
 
-	iterator_type base() const _es_noexcept_ { return __itr; }
+	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
 	_wrap_iter(iterator_type itr) _es_noexcept_ : __itr(itr) {}

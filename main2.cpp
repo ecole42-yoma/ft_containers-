@@ -76,10 +76,14 @@ main2() {
 	std::cout << a[9] << std::endl;
 
 	a.resize(20);
+	ft::vector< int >::iterator it	= a.begin();
+	ft::vector< int >::iterator it2 = a.end();
 	std::cout << a.size() << std::endl;
 	std::cout << a.capacity() << std::endl;
 	std::cout << a.max_size() << std::endl;
-	std::cout << a[20] << std::endl;
+	std::cout << *a.erase(it, it2) << std::endl;
+	std::cout << a.size() << std::endl;
+	std::cout << a.capacity() << std::endl;
 
 	std::cout << color_(RED) << "hi" << color_(RESET) << std::endl;
 }

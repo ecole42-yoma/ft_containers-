@@ -536,11 +536,26 @@ __vector__::assign(size_type n, const_reference value) _es_basic_ _ub_ {
 //   typename __vector__::iterator __vector__::insert(const_iterator position, _Iter first, _Iter last) _es_strong_ _ub_
 //   {}
 
-// __template__
-// __return__() typename __vector__::iterator __vector__::erase(iterator position) _es_basic_ _ub_ {}
+__template__
+__return__() typename __vector__::iterator __vector__::erase(iterator position) _es_basic_ _ub_ {
+	LOG_("vector: erase (position)");
+	assert_((position >= begin() && position < end()), "vector : erase [position] : invalid iterator");
+	pointer pin = this->__begin + (position - begin());
+	this->destruct_at_end_(std::copy(pin + 1, this->__end, pin));
+	return const_iterator(pin);
+}
 
-// __template__
-// __return__() typename __vector__::iterator __vector__::erase(iterator first, iterator last) _es_basic_ _ub_ {}
+__template__
+__return__() typename __vector__::iterator __vector__::erase(iterator first, iterator last) _es_basic_ _ub_ {
+	LOG_("vector: erase (range)");
+	assert_((first >= begin() && first < end() && first < last && last >= begin() && last <= end()),
+			"vector : erase [range] : invalid iterator");
+	pointer pin = this->__begin + (first - begin());
+	if (first != last) {
+		this->destruct_at_end_(std::copy(pin + (last - first), this->__end, pin));
+	}
+	return const_iterator(pin);
+}
 
 __template__ void
 __vector__::swap(vector& x) _es_noexcept_ _ub_ {
