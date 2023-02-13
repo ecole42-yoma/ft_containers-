@@ -9,10 +9,14 @@
 #include "_core_utils.hpp"
 #include "_iterator_traits.hpp"
 #include "_type_traits.hpp"
+#include "equal.hpp"
 #include "iterator.hpp"
+#include "lexicographical_compare.hpp"
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
 #else
+#include "../algorithm/equal.hpp"
+#include "../algorithm/lexicographical_compare.hpp"
 #include "../iterator/_iterator_traits.hpp"
 #include "../iterator/distance.hpp"
 #include "../iterator/iterator.hpp"
@@ -23,9 +27,9 @@
 #include "../util/_core_utils.hpp"
 #endif
 
-#include <algorithm>
-#include <iostream>
-#include <iterator>
+#include <algorithm> // swap, max, min
+#include <iostream>	 // cout
+#include <iterator>	 // advance
 
 #define __vector__			 vector< _Tp, _Alloc >
 #define __vector_base__		 in_vector_base< _Tp, _Alloc >
@@ -71,12 +75,11 @@ class in_vector_base {
 	explicit in_vector_base(size_type n, const allocator_type& alloc) _es_strong_;
 	~in_vector_base() _es_noexcept_;
 
-	void		allocate_(size_type n) throw(std::length_error) _es_strong_;
-	void		reserve_(size_type n) _es_strong_;
-	inline void deallocate_() _es_noexcept_;
-	void		destruct_at_end_(pointer new_last) _es_noexcept_;
-	void		construct_at_end_(size_type n, const_reference value = 0) _es_noexcept_; // TODO need to implement
-
+	void			 allocate_(size_type n) throw(std::length_error) _es_strong_;
+	void			 reserve_(size_type n) _es_strong_;
+	void			 deallocate_() _es_noexcept_;
+	void			 destruct_at_end_(pointer new_last) _es_noexcept_;
+	void			 construct_at_end_(size_type n, const_reference value = value_type()) _es_noexcept_;
 	inline size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
 	inline size_type capacity_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __begin); }
 	void			 clear_() _es_noexcept_ { destruct_at_end_(__begin); }
@@ -143,12 +146,21 @@ __return__(void) __vector_base__::reserve_(size_type n) _es_strong_ {
 }
 
 __template__
-__return__() inline void __vector_base__::deallocate_() _es_noexcept_ {
+__return__(void) __vector_base__::deallocate_() _es_noexcept_ {
 	LOG_C_("in_vector_base", B_COLOR_PURPLE);
 	if (__begin != NULL) {
 		clear_();
 		__alloc.deallocate(__begin, capacity_());
 		__begin = __end = __end_capacity = NULL;
+	}
+}
+
+__template__
+__return__(void) __vector_base__::construct_at_end_(size_type n, const_reference value) _es_noexcept_ {
+	LOG_C_("in_vector_base", B_COLOR_WHITE);
+	pointer soon_to_be_end = __end + n;
+	while (__end != soon_to_be_end) {
+		__alloc.construct(__end++, value);
 	}
 }
 
@@ -543,10 +555,9 @@ __return__(void) __vector__::resize(size_type sz, value_type c) _es_strong_ {
 	size_type current_size = size();
 	if (sz > current_size) {
 		if (sz > capacity()) {
-			vector temp(recommend_size__(sz), c);
-			this->swap(temp);
-		} else {
+			this->reserve_(sz);
 		}
+		this->construct_at_end_(sz - current_size, c);
 	} else if (sz < current_size) {
 		this->destruct_at_end_(this->__begin + sz);
 	}
@@ -659,9 +670,7 @@ __return__() typename ft::void_t<
 __template__
 __return__(bool)
 operator==(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
-	return lhs.size() == rhs.size() &&
-		   std::equal(lhs.begin(), lhs.end(), rhs.begin()); // TODO • ft::equal and/or ft::lexicographical_compare
-															//    ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+	return lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 __template__
 __return__(bool)
@@ -671,9 +680,7 @@ operator!=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >
 __template__
 __return__(bool)
 operator<(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >& rhs) _es_noexcept_ {
-	return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-	// return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-	// TODO: ft::lexicographical_compare
+	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 __template__
 __return__(bool)

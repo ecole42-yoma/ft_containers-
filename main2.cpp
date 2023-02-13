@@ -68,6 +68,19 @@ main2() {
 	std::cout << a.capacity() << std::endl;
 	std::cout << a.max_size() << std::endl;
 	std::cout << a[9] << std::endl;
+
+	a.resize(50, 5);
+	std::cout << a.size() << std::endl;
+	std::cout << a.capacity() << std::endl;
+	std::cout << a.max_size() << std::endl;
+	std::cout << a[9] << std::endl;
+
+	a.resize(20);
+	std::cout << a.size() << std::endl;
+	std::cout << a.capacity() << std::endl;
+	std::cout << a.max_size() << std::endl;
+	std::cout << a[20] << std::endl;
+
 	std::cout << color_(RED) << "hi" << color_(RESET) << std::endl;
 }
 

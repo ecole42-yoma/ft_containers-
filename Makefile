@@ -17,7 +17,8 @@ OBJ_DIR		=	z_object/
 INC_DIR		=	containers/	\
 				iterator/	\
 				type/		\
-				util/
+				util/		\
+				algorithm/
 
 INC			=	$(addprefix -I , $(INC_DIR))
 
