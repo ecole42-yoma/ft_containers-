@@ -40,7 +40,7 @@ template< typename _Tp >
 struct __has_iterator_typedefs< _Tp, false > : ft::false_type {};
 
 template< typename _Tp >
-struct has_iterator_typedefs : __has_iterator_typedefs_work< _Tp > {};
+struct has_iterator_typedefs : __has_iterator_typedefs< _Tp > {};
 
 /**
  * * [ has iterator category ] ---------------------------------------------------------------------
@@ -74,7 +74,8 @@ struct has_iterator_category : __has_iterator_category< _Tp > {};
  * * [ has iterator category convertible to] -------------------------------------------------------
  */
 template< typename _Tp, typename _Up, bool = has_iterator_category< iterator_traits< _Tp > >::value >
-struct __has_iterator_category_convertible_to : ft::is_convertible< typename iterator_traits< _Tp >::iterator_category, _Up > {};
+struct __has_iterator_category_convertible_to
+  : ft::is_convertible< typename iterator_traits< _Tp >::iterator_category, _Up > {};
 
 template< typename _Tp, typename _Up >
 struct __has_iterator_category_convertible_to< _Tp, _Up, false > : ft::false_type {};

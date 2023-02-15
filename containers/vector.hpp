@@ -303,7 +303,9 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	void					   pop_back() _es_noexcept_ _ub_;
 	iterator				   insert(const_iterator position, const_reference x) _es_strong_ _ub_;
 	iterator				   insert(const_iterator position, size_type n, const_reference x) _es_strong_ _ub_;
-	__template_iter__ iterator insert(const_iterator position, _Iter first, _Iter last) _es_strong_ _ub_;
+	__template_iter__ iterator insert(const_iterator														 position,
+									  typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type first,
+									  _Iter last) _es_strong_ _ub_;
 	iterator				   erase(iterator position) _es_basic_ _ub_;
 	iterator				   erase(iterator first, iterator last) _es_basic_ _ub_;
 	void					   clear() _es_noexcept_ { __base::clear_(); }
@@ -548,9 +550,10 @@ __return__(void) __vector__::pop_back() _es_noexcept_ _ub_ {
 // 															  const_reference x) _es_strong_ _ub_ {}
 
 // __template__ __template_iter__
-// __return__()
-//   typename __vector__::iterator __vector__::insert(const_iterator position, _Iter first, _Iter last) _es_strong_ _ub_
-//   {}
+// __return__() typename __vector__::iterator
+//   __vector__::insert(const_iterator															position,
+// 					 typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type first,
+// 					 _Iter																	last) _es_strong_ _ub_ {}
 
 __template__
 __return__() typename __vector__::iterator __vector__::erase(iterator position) _es_basic_ _ub_ {
