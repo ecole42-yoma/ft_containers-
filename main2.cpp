@@ -64,16 +64,11 @@ main2() {
 	std::cout << a.size() << " / " << a.capacity() << std::endl;
 	a.push_back(4);
 	std::cout << a.size() << " / " << a.capacity() << std::endl;
-	a.pop_back();
-	std::cout << a.size() << " / " << a.capacity() << std::endl;
-	a.pop_back();
-	std::cout << a.size() << " / " << a.capacity() << std::endl;
-	a.pop_back();
-	std::cout << a.size() << " / " << a.capacity() << std::endl;
-	a.pop_back();
-	std::cout << a.size() << " / " << a.capacity() << std::endl;
-	a.pop_back();
-	std::cout << a.size() << " / " << a.capacity() << std::endl;
+	{
+		ft::vector< int >::iterator it	= a.begin();
+		ft::vector< int >::iterator ite = a.end();
+		a.erase(it, ite);
+	}
 
 	ft::vector< int > three(33, 3);
 	// std::vector< int > a(10, 2);
@@ -120,5 +115,4 @@ main(int argc, char** argv) {
 		atexit(check_leaks);
 	(void)argv;
 	main2();
-	main3();
 }

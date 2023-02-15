@@ -29,10 +29,22 @@ __template_iter__ class _wrap_iter {
 	_wrap_iter(const _wrap_iter< _Up >& u,
 			   typename ft::enable_if< ft::is_convertible< _Up, iterator_type >::value >::type* = NULL) _es_noexcept_
 	  : __itr(u.base()) {}
-	
-	// forward iterator requirements
-	reference operator*() const _es_noexcept_ { return *__itr; }
-	pointer	  operator->() const _es_noexcept_ { return &(*__itr); }
+
+	_wrap_iter(const _wrap_iter& x)
+	  : __itr(x.base()) {}
+
+	_wrap_iter& operator=(const _wrap_iter& x) {
+		if (this != &x) {
+			__itr = x.base();
+		}
+		return *this;
+	}
+
+	/**
+	 * * [ forward iterator requirements ] ---------------------------------------------------------
+	 */
+	reference	operator*() const _es_noexcept_ { return *__itr; }
+	pointer		operator->() const _es_noexcept_ { return &(*__itr); }
 	_wrap_iter& operator++() _es_noexcept_ {
 		++__itr;
 		return *this;
@@ -42,8 +54,10 @@ __template_iter__ class _wrap_iter {
 		++(*this);
 		return temp;
 	}
-	
-	// bidirectional iterator requirements
+
+	/**
+	 * * [ bidirectional iterator requirements ] ---------------------------------------------------
+	 */
 	_wrap_iter operator--() _es_noexcept_ {
 		--__itr;
 		return *this;
@@ -53,17 +67,19 @@ __template_iter__ class _wrap_iter {
 		--(*this);
 		return temp;
 	}
-	
-	// random access iterator requirements
-	reference operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
-	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return base() + n; }
-	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return base() + (-n); }
+
+	/**
+	 * * [ random access iterator requirements ] ---------------------------------------------------
+	 */
+	reference  operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
+	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return _wrap_iter(base() + n); }
+	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return _wrap_iter(base() - n); }
 	_wrap_iter operator+=(difference_type n) _es_noexcept_ { return base() += n; }
 	_wrap_iter operator-=(difference_type n) _es_noexcept_ { return base() += (-n); }
-	
+
 	// inline difference_type
 	// operator-(const iterator_type& i) const _es_noexcept_ { return this->base() - i.base(); }
-	
+
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
@@ -74,22 +90,10 @@ __template_iter__ class _wrap_iter {
 
 }; // class _wrap_iter
 
-__template_iter1__
-__return__() inline bool
-operator==(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
-	return lhs.base() == rhs.base();
-}
-
 __template_iter2__
 __return__() inline bool
 operator==(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return lhs.base() == rhs.base();
-}
-
-__template_iter1__
-__return__() inline bool
-operator<(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
-	return lhs.base() < rhs.base();
 }
 
 __template_iter2__
@@ -98,22 +102,10 @@ operator<(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_
 	return lhs.base() < rhs.base();
 }
 
-__template_iter1__
-__return__() inline bool
-operator!=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
-	return !(lhs == rhs);
-}
-
 __template_iter2__
 __return__() inline bool
 operator!=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return !(lhs == rhs);
-}
-
-__template_iter1__
-__return__() inline bool
-operator>(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
-	return rhs < lhs;
 }
 
 __template_iter2__
@@ -122,22 +114,10 @@ operator>(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_
 	return rhs < lhs;
 }
 
-__template_iter1__
-__return__() inline bool
-operator>=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
-	return !(lhs < rhs);
-}
-
 __template_iter2__
 __return__() inline bool
 operator>=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
 	return !(lhs < rhs);
-}
-
-__template_iter1__
-__return__() inline bool
-operator<=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
-	return !(rhs < lhs);
 }
 
 __template_iter2__

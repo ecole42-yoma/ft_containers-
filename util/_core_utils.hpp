@@ -3,6 +3,7 @@
 #define __CORE_UTIL_HPP__
 
 #include <cassert>	 // assert
+#include <iostream>	 // cout, endl
 #include <limits>	 // numeric_limits
 #include <memory>	 // alloc, auto_ptr
 #include <stdexcept> // exception
@@ -115,5 +116,6 @@ log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GRE
 #define _es_basic_
 #define _es_strong_
 #define _ub_
+#define __nothingness__
 
 #endif
