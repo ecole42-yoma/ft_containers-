@@ -29,38 +29,41 @@ __template_iter__ class _wrap_iter {
 	_wrap_iter(const _wrap_iter< _Up >& u,
 			   typename ft::enable_if< ft::is_convertible< _Up, iterator_type >::value >::type* = NULL) _es_noexcept_
 	  : __itr(u.base()) {}
-
-	reference operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
+	
+	// forward iterator requirements
 	reference operator*() const _es_noexcept_ { return *__itr; }
 	pointer	  operator->() const _es_noexcept_ { return &(*__itr); }
-
 	_wrap_iter& operator++() _es_noexcept_ {
 		++__itr;
 		return *this;
 	}
-
 	_wrap_iter operator++(int) _es_noexcept_ {
 		_wrap_iter temp(*this);
 		++(*this);
 		return temp;
 	}
-
+	
+	// bidirectional iterator requirements
 	_wrap_iter operator--() _es_noexcept_ {
 		--__itr;
 		return *this;
 	}
-
 	_wrap_iter operator--(int) _es_noexcept_ {
 		_wrap_iter temp(*this);
 		--(*this);
 		return temp;
 	}
-
+	
+	// random access iterator requirements
+	reference operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
 	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return base() + n; }
 	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return base() + (-n); }
 	_wrap_iter operator+=(difference_type n) _es_noexcept_ { return base() += n; }
 	_wrap_iter operator-=(difference_type n) _es_noexcept_ { return base() += (-n); }
-
+	
+	// inline difference_type
+	// operator-(const iterator_type& i) const _es_noexcept_ { return this->base() - i.base(); }
+	
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
