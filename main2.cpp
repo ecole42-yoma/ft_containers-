@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "./containers/vector.hpp"
@@ -53,6 +54,8 @@ f(int n = 2) try {
 
 void
 main2() {
+	std::pair< int, char > temp;
+	std::make_pair(1, 'a');
 	ft::vector< int > a;
 	a.push_back(1);
 	std::cout << a.size() << " / " << a.capacity() << std::endl;

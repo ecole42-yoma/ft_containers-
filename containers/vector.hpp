@@ -33,6 +33,7 @@
 
 #define __vector__			 vector< _Tp, _Alloc >
 #define __vector_base__		 in_vector_base< _Tp, _Alloc >
+#define __template__		 template< typename _Tp, typename _Alloc >
 #define __template_input__	 template< typename _Input >
 #define __template_forward__ template< typename _Forward >
 #define __template_up__		 template< typename _Up >
@@ -785,5 +786,6 @@ __return__() inline void swap(ft::__vector__& lhs, ft::__vector__& rhs) {
 #undef __template_forward__
 #undef __template_up__
 #undef __template_ptr__
+#undef __template__
 
 #endif /* __VECTOR_HPP__ */

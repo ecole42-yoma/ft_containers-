@@ -107,7 +107,6 @@ log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GRE
 /**
  * * [ own define ] --------------------------------------------------------------------------------
  */
-#define __template__	  template< typename _Tp, typename _Alloc >
 #define __template_iter__ template< typename _Iter >
 #define __return__(type)  type
 
