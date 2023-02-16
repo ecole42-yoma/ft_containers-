@@ -57,7 +57,9 @@ class stack {
 	}
 	stack& operator=(const stack& q) {
 		LOG_("copy assignment operator");
-		__c = q.__c;
+		if (this != &q) {
+			__c = q.__c;
+		}
 		return *this;
 	}
 	~stack() { LOG_("destructor"); }
@@ -82,20 +84,42 @@ class stack {
 
 }; /* class stack */
 
-/*
-
-[ non member function ]
-operator==
-operator!=
-operator<
-operator<=
-operator>
-operator>=
-swap
-
-*/
-
+/**
+ * * [ non-member function overloads ] -------------------------------------------------------------
+ */
+__template__
+__return__() inline bool
+operator==(const __stack__& __x, const __stack__& __y) {
+	return __x.c == __y.c;
 }
+
+__template__
+__return__() inline bool
+operator<(const __stack__& __x, const __stack__& __y) {
+	return __x.c < __y.c;
+}
+
+__template__ inline _LIBCPP_INLINE_VISIBILITY bool
+operator!=(const __stack__& __x, const __stack__& __y) {
+	return !(__x == __y);
+}
+
+__template__ inline _LIBCPP_INLINE_VISIBILITY bool
+operator>(const __stack__& __x, const __stack__& __y) {
+	return __y < __x;
+}
+
+__template__ inline _LIBCPP_INLINE_VISIBILITY bool
+operator>=(const __stack__& __x, const __stack__& __y) {
+	return !(__x < __y);
+}
+
+__template__ inline _LIBCPP_INLINE_VISIBILITY bool
+operator<=(const __stack__& __x, const __stack__& __y) {
+	return !(__y < __x);
+}
+
+} /* ft namespace */
 
 #undef __stack__
 #undef __template__
