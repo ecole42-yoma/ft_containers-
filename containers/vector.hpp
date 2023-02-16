@@ -292,7 +292,6 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 
 	/**
 	 * * [ modifiers ] -----------------------------------------------------------------------------
-	 * TODO --
 	 */
 	__template_input__ __return__() typename ft::enable_if< ft::is_iterator< _Input >::value, void >::type
 	  assign(_Input first, _Input last) _es_basic_ _ub_;

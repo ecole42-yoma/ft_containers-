@@ -20,8 +20,19 @@ __template__
 __return__(bool)
 operator<(const __stack__& x, const __stack__& y);
 
+/**
+ * * [ stack container ] ---------------------------------------------------------------------------
+ * ! []
+ * TODO - todo list
+ * ? blue color
+ *  @param parameter-name description
+ *  @param ss
+ */
 template< typename _Tp, typename _Container = ft::vector< _Tp > >
 class stack {
+	/**
+	 * * [ default type] ---------------------------------------------------------------------------
+	 */
 	public:
 	typedef _Tp										 value_type;
 	typedef _Container								 container_type;
@@ -32,25 +43,47 @@ class stack {
 	protected:
 	container_type __c;
 
+	/**
+	 * * [ default form] ---------------------------------------------------------------------------
+	 */
 	public:
 	stack()
 	  : __c() {}
-	explicit stack(const container_type& c)
-	  : __c(c) {}
+	explicit stack(const container_type& ctnr = container_type())
+	  : __c(ctnr) {}
+	stack(const stack& from)
+	  : __c(from.__c) {
+		LOG_("copy constructor");
+	}
+	stack& operator=(const stack& q) {
+		LOG_("copy assignment operator");
+		__c = q.__c;
+		return *this;
+	}
+	~stack() { LOG_("destructor"); }
+
+	/**
+	 * * [ Element Access ] ------------------------------------------------------------------------
+	 */
+	reference		top() _es_noexcept_ _ub_ { return __c.back(); }
+	const_reference top() const _es_noexcept_ _ub_ { return __c.back(); }
+
+	/**
+	 * * [ Capacity ] ------------------------------------------------------------------------------
+	 */
+	bool	  empty() const _es_noexcept_ { return __c.empty(); }
+	size_type size() const _es_noexcept_ { return __c.size(); }
+
+	/**
+	 * * [ Modifiers ] -----------------------------------------------------------------------------
+	 */
+	void push(const value_type& x) _es_strong_ _ub_ { __c.push_back(x); }
+	void pop() _es_strong_ _ub_ { __c.pop_back(); }
+
 }; /* class stack */
 
 /*
-[ member function table ]
-stack
-~stack
-operator=
-top
-empty
-size
-push
-pop
 
--------------------------
 [ non member function ]
 operator==
 operator!=
