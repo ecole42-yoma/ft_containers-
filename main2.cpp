@@ -20,8 +20,8 @@
 
 #define T_SIZE_TYPE typename TESTED_NAMESPACE::vector< T >::size_type
 
-// namespace TESTED_NAMESPACE = ft;
-namespace TESTED_NAMESPACE = std;
+namespace TESTED_NAMESPACE = ft;
+// namespace TESTED_NAMESPACE = std;
 
 template< typename T >
 void
@@ -79,47 +79,62 @@ f(int n = 2) try {
 	return n;
 }
 
+// #define TESTED_TYPE int
 #define TESTED_TYPE int
-#include <list>
 
 void
-checkErase(TESTED_NAMESPACE::vector< TESTED_TYPE > const&				  vct,
-		   TESTED_NAMESPACE::vector< TESTED_TYPE >::const_iterator const& it) {
-	static int i = 0;
-	std::cout << "[" << i++ << "] "
-			  << "erase: " << it - vct.begin() << std::endl;
-	printSize(vct);
-}
+prepost_incdec(TESTED_NAMESPACE::vector< TESTED_TYPE >& vct) {
+	TESTED_NAMESPACE::vector< TESTED_TYPE >::iterator it = vct.begin();
+	TESTED_NAMESPACE::vector< TESTED_TYPE >::iterator it_tmp;
 
+	std::cout << "Pre inc" << std::endl;
+	it_tmp = ++it;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Pre dec" << std::endl;
+	it_tmp = --it;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Post inc" << std::endl;
+	it_tmp = it++;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+
+	std::cout << "Post dec" << std::endl;
+	it_tmp = it--;
+	std::cout << *it_tmp << " | " << *it << std::endl;
+	std::cout << "###############################################" << std::endl;
+}
 void
 main2() {
 
-	TESTED_NAMESPACE::vector< TESTED_TYPE > vct(10);
+	{
+		const int												size = 5;
+		TESTED_NAMESPACE::vector< TESTED_TYPE >					vct(size);
+		TESTED_NAMESPACE::vector< TESTED_TYPE >::iterator		it	= vct.begin();
+		TESTED_NAMESPACE::vector< TESTED_TYPE >::const_iterator ite = vct.begin();
 
-	for (unsigned long int i = 0; i < vct.size(); ++i)
-		vct[i] = std::string((vct.size() - i), i + 65);
-	printSize(vct);
+		for (int i = 0; i < size; ++i)
+			it[i] = (size - i) * 5;
+		prepost_incdec(vct);
 
-	checkErase(vct, vct.erase(vct.begin() + 2));
+		it = it + 5;
+		it = 1 + it;
+		it = it - 4;
+		std::cout << *(it += 2) << std::endl;
+		std::cout << *(it -= 1) << std::endl;
 
-	checkErase(vct, vct.erase(vct.begin()));
-	checkErase(vct, vct.erase(vct.end() - 1));
+		*(it -= 2) = 42;
+		*(it += 2) = 21;
 
-	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
-	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
+		std::cout << "const_ite +=: " << *(ite += 2) << std::endl;
+		std::cout << "const_ite -=: " << *(ite -= 2) << std::endl;
 
-	vct.push_back("Hello");
-	vct.push_back("Hi there");
-	printSize(vct);
-	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
+		std::cout << "(it == const_it): " << (ite == it) << std::endl;
+		std::cout << "(const_ite - it): " << (ite - it) << std::endl;
+		std::cout << "(ite + 3 == it): " << (ite + 3 == it) << std::endl;
 
-	vct.push_back("ONE");
-	vct.push_back("TWO");
-	vct.push_back("THREE");
-	vct.push_back("FOUR");
-	printSize(vct);
-	checkErase(vct, vct.erase(vct.begin(), vct.end()));
-
+		printSize(vct, true);
+	}
 	//
 }
 

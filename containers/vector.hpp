@@ -63,8 +63,8 @@ class in_vector_base {
 	typedef typename allocator_type::difference_type difference_type;
 	typedef typename allocator_type::pointer		 pointer;
 	typedef typename allocator_type::const_pointer	 const_pointer;
-	typedef pointer									 iterator;
-	typedef const_pointer							 const_iterator;
+	// typedef pointer									 iterator;
+	// typedef const_pointer							 const_iterator;
 
 	pointer		   __begin;
 	pointer		   __end;
@@ -76,14 +76,15 @@ class in_vector_base {
 	explicit in_vector_base(size_type n, const allocator_type& alloc) _es_strong_;
 	~in_vector_base() _es_noexcept_;
 
-	void	  allocate_(size_type n) throw(std::length_error) _es_strong_;
-	void	  reserve_(size_type n) _es_strong_;
-	void	  deallocate_() _es_noexcept_;
-	void	  destruct_at_end_(pointer new_last) _es_noexcept_;
-	void	  construct_at_end_(size_type n, const_reference value = value_type()) _es_noexcept_;
-	size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
-	size_type capacity_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __begin); }
-	void	  clear_() _es_noexcept_ { destruct_at_end_(__begin); }
+	void			 allocate_(size_type n) throw(std::length_error) _es_strong_;
+	void			 reserve_(size_type n) _es_strong_;
+	void			 deallocate_() _es_noexcept_;
+	void			 destruct_at_end_(pointer new_last) _es_noexcept_;
+	void			 construct_at_end_(size_type n, const_reference value = value_type()) _es_noexcept_;
+	inline size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
+	inline size_type capacity_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __begin); }
+	inline size_type remain_size_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __end); }
+	void			 clear_() _es_noexcept_ { destruct_at_end_(__begin); }
 
 	void copy_data_(const in_vector_base& from) _es_noexcept_;
 	void swap_data_(in_vector_base& from) _es_noexcept_;
@@ -270,10 +271,10 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	/**
 	 * * [ iterators ] -----------------------------------------------------------------------------
 	 */
-	iterator			   begin() _es_noexcept_ { return iterator(this->__begin); }
-	const_iterator		   begin() const _es_noexcept_ { return const_iterator(this->__begin); }
-	iterator			   end() _es_noexcept_ { return iterator(this->__end); }
-	const_iterator		   end() const _es_noexcept_ { return const_iterator(this->__end); }
+	inline iterator		   begin() _es_noexcept_ { return iterator(this->__begin); }
+	inline const_iterator  begin() const _es_noexcept_ { return const_iterator(this->__begin); }
+	inline iterator		   end() _es_noexcept_ { return iterator(this->__end); }
+	inline const_iterator  end() const _es_noexcept_ { return const_iterator(this->__end); }
 	reverse_iterator	   rbegin() _es_noexcept_ { return reverse_iterator(end()); }
 	const_reverse_iterator rbegin() const _es_noexcept_ { return const_reverse_iterator(end()); }
 	reverse_iterator	   rend() _es_noexcept_ { return reverse_iterator(begin()); }
@@ -325,8 +326,8 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 		return empty() ? (const value_type*)0 : ptr.operator->();
 	}
 
-	iterator	   make_iter__(pointer ptr) _es_noexcept_ { return iterator(ptr); }
-	const_iterator make_iter__(const_pointer ptr) const _es_noexcept_ { return const_iterator(ptr); }
+	inline iterator		  make_iter__(pointer ptr) _es_noexcept_ { return iterator(ptr); }
+	inline const_iterator make_iter__(const_pointer ptr) const _es_noexcept_ { return const_iterator(ptr); }
 
 	/**
 	 * * [ internal workhorse ] --------------------------------------------------------------------
@@ -553,8 +554,7 @@ __return__(void) __vector__::pop_back() _es_noexcept_ _ub_ {
 __template__
 __return__() typename __vector__::iterator __vector__::insert(iterator position, const_reference x) _es_strong_ _ub_ {
 	LOG_("vector: insert (value)");
-	insert(position, size_type(1), x);
-	return make_iter__(this->__begin + ft::distance(this->__begin, position));
+	return (insert(position, size_type(1), x));
 }
 
 __template__
@@ -563,8 +563,8 @@ __return__()
 	LOG_("vector: insert (fill)");
 	difference_type offset = ft::distance(begin(), position);
 	if (n > 0) {
-		if (n > static_cast< size_type >(this->__end_capacity - this->__end)) {
-			vector temp(recommend_size__(size() + n));
+		if (n > this->remain_size_()) {
+			vector temp(size() + n);
 			std::copy(this->__begin, this->__begin + offset, temp.begin());
 			std::fill_n(temp.begin() + offset, n, x);
 			std::copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
@@ -575,7 +575,7 @@ __return__()
 			std::advance(this->__end, n);
 		}
 	}
-	return make_iter__(offset);
+	return make_iter__(this->__begin + offset);
 }
 
 __template__ __template_iter__
@@ -587,8 +587,8 @@ __return__() typename __vector__::iterator
 	difference_type offset = ft::distance(begin(), position);
 	difference_type n	   = ft::distance(first, last);
 	if (n > 0) {
-		if (static_cast< size_type >(n) > static_cast< size_type >(this->__end_capacity - this->__end)) {
-			vector temp(recommend_size__(size() + n));
+		if (static_cast< size_type >(n) > this->remain_size_()) {
+			vector temp(size() + n);
 			std::copy(this->__begin, this->__begin + offset, temp.begin());
 			std::copy(first, last, temp.begin() + offset);
 			std::copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
@@ -606,9 +606,10 @@ __template__
 __return__() typename __vector__::iterator __vector__::erase(iterator position) _es_basic_ _ub_ {
 	LOG_("vector: erase (position)");
 	assert_((position >= begin() && position < end()), "vector : erase [position] : invalid iterator");
-	pointer pin = this->__begin + ft::distance(begin(), position);
+	difference_type diff = ft::distance(begin(), position);
+	pointer			pin	 = this->__begin + diff;
 	this->destruct_at_end_(std::copy(pin + 1, this->__end, pin));
-	return make_iter__(pin);
+	return iterator(pin);
 }
 
 __template__
@@ -616,11 +617,12 @@ __return__() typename __vector__::iterator __vector__::erase(iterator first, ite
 	LOG_("vector: erase (range)");
 	assert_((first >= begin() && first < end() && first < last && last >= begin() && last <= end()),
 			"vector : erase [range] : invalid iterator");
-	pointer pin = this->__begin + ft::distance(begin(), first);
+	difference_type diff = ft::distance(begin(), first);
 	if (first != last) {
+		pointer pin = this->__begin + diff;
 		this->destruct_at_end_(std::copy(pin + ft::distance(first, last), this->__end, pin));
 	}
-	return make_iter__(pin);
+	return iterator(begin() + diff);
 }
 
 __template__ void

@@ -39,21 +39,21 @@ struct iterator_traits : __iterator_traits< _Iter, ft::has_iterator_typedefs< _I
 
 template< typename _Iter >
 struct iterator_traits< _Iter* > {
-	// typedef typename ft::remove_cv< _Iter >::type value_type;
-	typedef ptrdiff_t						difference_type;
+	typedef std::ptrdiff_t					difference_type;
 	typedef _Iter							value_type;
 	typedef value_type*						pointer;
 	typedef value_type&						reference;
 	typedef std::random_access_iterator_tag iterator_category;
 };
 
-// template< typename _Iter > // XXX: need to check if this is needed
-// struct iterator_traits< const _Iter* > {
-// 	typedef ptrdiff_t				   difference_type;
-// 	typedef _Iter					   value_type;
-// 	typedef const value_type*		   pointer;
-// 	typedef const value_type&		   reference;
-// 	typedef random_access_iterator_tag iterator_category;
-// };
+template< typename _Iter > // XXX: need to check if this is needed
+struct iterator_traits< const _Iter* > {
+	typedef std::ptrdiff_t						  difference_type;
+	typedef typename ft::remove_cv< _Iter >::type value_type;
+	typedef const value_type*					  pointer;
+	typedef const value_type&					  reference;
+	typedef std::random_access_iterator_tag		  iterator_category;
+};
+
 }
 #endif

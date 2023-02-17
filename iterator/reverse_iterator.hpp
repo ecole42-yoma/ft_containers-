@@ -31,12 +31,7 @@ __template_iter__ struct reverse_iterator
 	reverse_iterator() _es_noexcept_ : __itr() {}
 
 	template< class _Up >
-	reverse_iterator(const reverse_iterator< _Up >& u,
-					 typename ft::enable_if< ft::is_convertible< _Up, iterator_type >::value >::type* = NULL)
-	  _es_noexcept_ : __itr(u.base()) {}
-
-	reverse_iterator(const reverse_iterator& x)
-	  : __itr(x.base()) {}
+	reverse_iterator(const reverse_iterator< _Up >& u) _es_noexcept_ : __itr(u.base()) {}
 
 	reverse_iterator& operator=(const reverse_iterator& x) {
 		if (this != &x) {
@@ -94,10 +89,14 @@ __template_iter__ struct reverse_iterator
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
-	reverse_iterator(iterator_type itr) _es_noexcept_ : __itr(itr) {}
+	reverse_iterator(const iterator_type& itr) _es_noexcept_ : __itr(itr) {}
 
 	template< typename _Tp, typename _Alloc >
 	friend class vector;
+	template< class _CharT, class _Traits, class _Alloc >
+	friend class basic_string;
+	template< class _Tp, size_t >
+	friend class span;
 
 }; // class reverse_iterator
 
@@ -140,7 +139,7 @@ operator<=(const reverse_iterator< _Iter1 >& lhs, const reverse_iterator< _Iter2
 __template_iter1__
 __return__() reverse_iterator< _Iter1 >
 operator+(typename reverse_iterator< _Iter1 >::difference_type n, const reverse_iterator< _Iter1 >& rhs) _es_noexcept_ {
-	return rhs -= n;
+	return reverse_iterator< _Iter1 >(rhs.base() - n);
 }
 
 __template_iter2__

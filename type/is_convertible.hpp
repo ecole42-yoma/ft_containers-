@@ -25,6 +25,9 @@ struct is_convertible : __is_convertible_work< _T1, _T2 > {};
 template< typename _T1, typename _T2 >
 struct is_convertible< _T1, _T2[] > : ft::false_type {};
 
+// template< typename _T1, typename _T2 >
+// struct is_convertible< _T1[], _T2[] > : is_convertible< _T1[0], _T2[0] > {};
+
 }
 
 #endif
