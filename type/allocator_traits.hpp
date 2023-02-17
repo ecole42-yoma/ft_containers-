@@ -61,7 +61,7 @@ struct __allocator_traits_work< _Alloc, true > {
 	typedef typename _Alloc::size_type								size_type;
 	typedef typename _Alloc::propagate_on_container_move_assignment propagate_on_container_move_assignment;
 	typedef typename _Alloc::is_always_equal						is_always_equal;
-	// NOTE: the following are not required by the is_allocator
+	// ANOTATION: the following are not required by the is_allocator
 	// typedef typename _Alloc::void_pointer							void_pointer;
 	// typedef typename _Alloc::const_void_pointer						const_void_pointer;
 	// typedef typename _Alloc::propagate_on_container_copy_assignment propagate_on_container_copy_assignment;
