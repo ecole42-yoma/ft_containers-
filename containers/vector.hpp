@@ -52,19 +52,19 @@ namespace ft {
 template< typename _Tp, typename _Alloc >
 class in_vector_base {
 	public:
-	typedef _Alloc								   allocator_type;
-	typedef ft::allocator_traits< allocator_type > _allocator_traits;
-	typedef typename _allocator_traits::size_type  size_type;
+	typedef _Alloc allocator_type;
+	// typedef ft::allocator_traits< allocator_type > _allocator_traits;
+	typedef typename allocator_type::size_type size_type;
 
 	protected:
-	typedef _Tp											value_type;
-	typedef value_type&									reference;
-	typedef const value_type&							const_reference;
-	typedef typename _allocator_traits::difference_type difference_type;
-	typedef typename _allocator_traits::pointer			pointer;
-	typedef typename _allocator_traits::const_pointer	const_pointer;
-	typedef pointer										iterator;
-	typedef const_pointer								const_iterator;
+	typedef _Tp										 value_type;
+	typedef value_type&								 reference;
+	typedef const value_type&						 const_reference;
+	typedef typename allocator_type::difference_type difference_type;
+	typedef typename allocator_type::pointer		 pointer;
+	typedef typename allocator_type::const_pointer	 const_pointer;
+	typedef pointer									 iterator;
+	typedef const_pointer							 const_iterator;
 
 	pointer		   __begin;
 	pointer		   __end;
