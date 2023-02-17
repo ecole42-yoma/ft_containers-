@@ -1,4 +1,5 @@
 #pragma once
+#include "has_iterator_x.hpp"
 #ifndef __REVERSE__ITERATOR_HPP__
 #define __REVERSE__ITERATOR_HPP__
 
@@ -17,18 +18,21 @@ __template_iter__ struct reverse_iterator
 						 typename ft::iterator_traits< _Iter >::pointer,
 						 typename ft::iterator_traits< _Iter >::reference > {
 	public:
-	typedef _Iter															 iterator_type;
-	typedef typename ft::iterator_traits< iterator_type >::iterator_category iterator_category;
-	typedef typename ft::iterator_traits< iterator_type >::value_type		 value_type;
-	typedef typename ft::iterator_traits< iterator_type >::difference_type	 difference_type;
-	typedef typename ft::iterator_traits< iterator_type >::pointer			 pointer;
-	typedef typename ft::iterator_traits< iterator_type >::reference		 reference;
+	typedef _Iter								 iterator_type;
+	typedef ft::iterator_traits< iterator_type > traits_;
+	typedef typename traits_::iterator_category	 iterator_category;
+	typedef typename traits_::value_type		 value_type;
+	typedef typename traits_::difference_type	 difference_type;
+	typedef typename traits_::pointer			 pointer;
+	typedef typename traits_::reference			 reference;
 
 	private:
 	iterator_type __itr;
 
 	public:
-	reverse_iterator() _es_noexcept_ : __itr() {}
+	reverse_iterator() _es_noexcept_ : __itr(iterator_type()) {}
+
+	reverse_iterator(const iterator_type& itr) _es_noexcept_ : __itr(itr) {}
 
 	template< class _Up >
 	reverse_iterator(const reverse_iterator< _Up >& u) _es_noexcept_ : __itr(u.base()) {}
@@ -43,15 +47,18 @@ __template_iter__ struct reverse_iterator
 	/**
 	 * * [ forward iterator requirements ] ---------------------------------------------------------
 	 */
-	reference		  operator*() const _es_noexcept_ { return *(--__itr); }
-	pointer			  operator->() const _es_noexcept_ { return *__itr; }
+	reference operator*() const _es_noexcept_ {
+		iterator_type temp = __itr;
+		return *(--temp);
+	}
+	pointer			  operator->() const _es_noexcept_ { return &operator*(); }
 	reverse_iterator& operator++() _es_noexcept_ {
 		--__itr;
 		return *this;
 	}
 	reverse_iterator operator++(int) _es_noexcept_ {
 		reverse_iterator temp(*this);
-		--(*this);
+		--__itr;
 		return temp;
 	}
 
@@ -64,7 +71,7 @@ __template_iter__ struct reverse_iterator
 	}
 	reverse_iterator operator--(int) _es_noexcept_ {
 		reverse_iterator temp(*this);
-		++(*this);
+		++__itr;
 		return temp;
 	}
 
@@ -89,8 +96,6 @@ __template_iter__ struct reverse_iterator
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
-	reverse_iterator(const iterator_type& itr) _es_noexcept_ : __itr(itr) {}
-
 	template< typename _Tp, typename _Alloc >
 	friend class vector;
 	template< class _CharT, class _Traits, class _Alloc >

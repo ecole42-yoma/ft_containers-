@@ -28,6 +28,8 @@ __template_iter__ class _wrap_iter {
 	public:
 	_wrap_iter() _es_noexcept_ : __itr(iterator_type()) {}
 
+	_wrap_iter(const iterator_type& itr) _es_noexcept_ : __itr(itr) {}
+
 	template< class _Up >
 	_wrap_iter(const _wrap_iter< _Up >& u,
 			   typename ft::enable_if< ft::is_iterator_of_random< _Up >::value >::type* = NULL) _es_noexcept_
@@ -91,8 +93,6 @@ __template_iter__ class _wrap_iter {
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
-	_wrap_iter(const iterator_type& itr) _es_noexcept_ : __itr(itr) {}
-
 	template< typename _Tp, typename _Alloc >
 	friend class vector;
 	template< class _CharT, class _Traits, class _Alloc >
