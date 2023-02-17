@@ -41,8 +41,6 @@ class stack {
 	 * * [ default form] ---------------------------------------------------------------------------
 	 */
 	public:
-	stack()
-	  : __c() {}
 	explicit stack(const container_type& ctnr = container_type())
 	  : __c(ctnr) {}
 	stack(const stack& from)
@@ -90,13 +88,13 @@ class stack {
 __template__
 __return__() inline bool
 operator==(const __stack__& lhs, const __stack__& rhs) {
-	return lhs.c == rhs.c;
+	return lhs.__c == rhs.__c;
 }
 
 __template__
 __return__() inline bool
 operator<(const __stack__& lhs, const __stack__& rhs) {
-	return lhs.c < rhs.c;
+	return lhs.__c < rhs.__c;
 }
 
 __template__ inline bool

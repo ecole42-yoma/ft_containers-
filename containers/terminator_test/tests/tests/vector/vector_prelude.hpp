@@ -33,9 +33,9 @@
 #define CHECK_CAPACITY(vec)                                                                        \
     {                                                                                              \
         if (!(vec.capacity() >= vec.size())) {                                                     \
-            PRINT_MSG("Capacity is smaller than size");                                            \
+            PRINT_MSG("\n\nCapacity is smaller than size");                                        \
         } else {                                                                                   \
-            PRINT_MSG("Capacity Ok");                                                              \
+            PRINT_MSG("\n\nCapacity Ok");                                                          \
         }                                                                                          \
     }
 
