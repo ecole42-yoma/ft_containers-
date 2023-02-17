@@ -76,6 +76,9 @@ class stack {
 	void push(const value_type& x) _es_strong_ _ub_ { __c.push_back(x); }
 	void pop() _es_strong_ _ub_ { __c.pop_back(); }
 
+	/**
+	 * * [ non-member function overloads ] ---------------------------------------------------------
+	 */
 	__template_in__ friend bool operator==(const __stack_in__& x, const __stack_in__& y);
 	__template_in__ friend bool operator<(const __stack_in__& x, const __stack_in__& y);
 

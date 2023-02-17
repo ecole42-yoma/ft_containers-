@@ -76,14 +76,14 @@ class in_vector_base {
 	explicit in_vector_base(size_type n, const allocator_type& alloc) _es_strong_;
 	~in_vector_base() _es_noexcept_;
 
-	void			 allocate_(size_type n) throw(std::length_error) _es_strong_;
-	void			 reserve_(size_type n) _es_strong_;
-	void			 deallocate_() _es_noexcept_;
-	void			 destruct_at_end_(pointer new_last) _es_noexcept_;
-	void			 construct_at_end_(size_type n, const_reference value = value_type()) _es_noexcept_;
-	inline size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
-	inline size_type capacity_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __begin); }
-	void			 clear_() _es_noexcept_ { destruct_at_end_(__begin); }
+	void	  allocate_(size_type n) throw(std::length_error) _es_strong_;
+	void	  reserve_(size_type n) _es_strong_;
+	void	  deallocate_() _es_noexcept_;
+	void	  destruct_at_end_(pointer new_last) _es_noexcept_;
+	void	  construct_at_end_(size_type n, const_reference value = value_type()) _es_noexcept_;
+	size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
+	size_type capacity_() const _es_noexcept_ { return static_cast< size_type >(__end_capacity - __begin); }
+	void	  clear_() _es_noexcept_ { destruct_at_end_(__begin); }
 
 	void copy_data_(const in_vector_base& from) _es_noexcept_;
 	void swap_data_(in_vector_base& from) _es_noexcept_;
@@ -109,6 +109,7 @@ __vector_base__::in_vector_base(size_type n) _es_strong_
 	LOG_("constuctor in_vector_base (size)");
 	allocate_(n);
 }
+
 __template__
 __vector_base__::in_vector_base(size_type n, const allocator_type& alloc) _es_strong_
   : __begin(NULL)
@@ -240,12 +241,10 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	explicit vector(size_type			  n,
 					const_reference		  val	= value_type(),
 					const allocator_type& alloc = allocator_type()) _es_strong_ _ub_; // fill
-	__template_input__ vector(
-	  _Input																   first,
-	  typename ft::enable_if< ft::is_iterator< _Input >::value, _Input >::type last,
-	  const allocator_type& alloc = std::allocator< typename ft::iterator_traits< _Input >::value_type >())
-	  _es_strong_ _ub_;							 // range
-	vector(const vector& from) _es_strong_ _ub_; // copy
+	__template_input__ vector(_Input																   first,
+							  typename ft::enable_if< ft::is_iterator< _Input >::value, _Input >::type last,
+							  const allocator_type& alloc = allocator_type()) _es_strong_ _ub_; // range
+	vector(const vector& from) _es_strong_ _ub_;												// copy
 	vector& operator=(const vector& from) _es_basic_ _ub_;
 	~vector() _es_noexcept_;
 
@@ -335,22 +334,23 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	private:
 	__template_input__ typename ft::void_t<
 	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-								!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
+								!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 							  _Input >::type >::type
 	internal_iterator_construct__(_Input first, _Input last, const allocator_type& alloc);
 	__template_forward__ typename ft::void_t<
-	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
+	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 							  _Forward >::type >::type
 	internal_iterator_construct__(_Forward first, _Forward last, const allocator_type& alloc);
+
 	__template_input__ typename ft::void_t<
 	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-								!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
+								!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 							  _Input >::type >::type
 	internal_assign__(_Input first, _Input last, const allocator_type& alloc);
 	__template_forward__ typename ft::void_t<
-	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
+	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 							  _Forward >::type >::type
-	internal_assign__(_Forward first, _Forward last, const allocator_type& alloc, size_type n);
+	internal_assign__(_Forward first, _Forward last, const allocator_type& alloc);
 
 }; /* class vector */
 
@@ -400,7 +400,10 @@ __template__
 __vector__::vector(const vector& from) _es_strong_ _ub_ // copy
   try : __base(from.size(), from.__alloc) {
 	LOG_("copy constructor");
-	*this = from;
+	if (from.size() > 0) {
+		std::copy(from.begin(), from.end(), begin());
+		this->__end = this->__begin + from.size();
+	}
 } catch (const std::exception& e) {
 	std::cerr << e.what() << std::endl;
 	throw;
@@ -437,6 +440,7 @@ __return__() typename __vector__::reference __vector__::at(size_type n) throw(st
 	}
 	return this->__begin[n];
 }
+
 __template__
 __return__() typename __vector__::const_reference __vector__::at(size_type n) const
   throw(std::out_of_range) _es_strong_ {
@@ -446,47 +450,55 @@ __return__() typename __vector__::const_reference __vector__::at(size_type n) co
 	}
 	return this->__begin[n];
 }
+
 __template__
 __return__() typename __vector__::reference __vector__::operator[](size_type n) _es_noexcept_ _ub_ {
 	LOG_("vector: operator[]");
 	assert_((n < size()), "vector : operator[] : index out of bounds");
 	return this->__begin[n];
 }
+
 __template__
 __return__() typename __vector__::const_reference __vector__::operator[](size_type n) const _es_noexcept_ _ub_ {
 	LOG_("vector: operator[] [const]");
 	assert_((n < size()), "vector : operator[] [const] : index out of bounds");
 	return this->__begin[n];
 }
+
 __template__
 __return__() typename __vector__::reference __vector__::front() _es_noexcept_ _ub_ {
 	LOG_("vector: front");
 	assert_((!empty()), "vector : front : called for empty vector");
 	return *this->__begin;
 }
+
 __template__
 __return__() typename __vector__::const_reference __vector__::front() const _es_noexcept_ _ub_ {
 	LOG_("vector: front [const]");
 	assert_((!empty()), "vector : front [const] : called for empty vector");
 	return *this->__begin;
 }
+
 __template__
 __return__() typename __vector__::reference __vector__::back() _es_noexcept_ _ub_ {
 	LOG_("vector: back ");
 	assert_((!empty()), "vector : back  : called for empty vector");
 	return *(this->__end - 1);
 }
+
 __template__
 __return__() typename __vector__::const_reference __vector__::back() const _es_noexcept_ _ub_ {
 	LOG_("vector: back [const]");
 	assert_(!empty(), "vector : back [const] : called for empty vector");
 	return *(this->__end - 1);
 }
+
 __template__
 __return__() typename __vector__::value_type* __vector__::data() _es_noexcept_ {
 	LOG_("vector: data");
 	return data_ptr_(this->__begin);
 }
+
 __template__
 __return__() const typename __vector__::value_type* __vector__::data() const _es_noexcept_ {
 	LOG_("vector: data [const]");
@@ -500,13 +512,14 @@ __template__ __template_input__
 __return__() typename ft::enable_if< ft::is_iterator< _Input >::value, void >::type
   __vector__::assign(_Input first, _Input last) _es_basic_ _ub_ {
 	LOG_("vector: assign (range)");
-	internal_assign__(first, last, this->__alloc, ft::distance(first, last));
+	internal_assign__(first, last, this->__alloc);
 }
+
 __template__ void
 __vector__::assign(size_type n, const_reference value) _es_basic_ _ub_ {
 	LOG_("vector: assign (fill)");
 	if (n > capacity()) {
-		vector temp(recommend_size__(n), value);
+		vector temp(n, value);
 		this->swap_data_(temp);
 	} else if (n > size()) {
 		std::fill(this->__begin, this->__end, value);
@@ -574,7 +587,7 @@ __return__() typename __vector__::iterator
 	difference_type offset = ft::distance(begin(), position);
 	difference_type n	   = ft::distance(first, last);
 	if (n > 0) {
-		if (n > static_cast< size_type >(this->__end_capacity - this->__end)) {
+		if (static_cast< size_type >(n) > static_cast< size_type >(this->__end_capacity - this->__end)) {
 			vector temp(recommend_size__(size() + n));
 			std::copy(this->__begin, this->__begin + offset, temp.begin());
 			std::copy(first, last, temp.begin() + offset);
@@ -661,6 +674,7 @@ __return__(bool) __vector__::invariants__() const _es_noexcept_ {
 	}
 	return true;
 }
+
 __template__
 __return__() typename __vector__::size_type __vector__::recommend_size__(size_type new_size) const
   throw(std::length_error) _es_basic_ {
@@ -679,26 +693,28 @@ __return__() typename __vector__::size_type __vector__::recommend_size__(size_ty
 __template__ __template_input__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-							!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
+							!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 						  _Input >::type >::type
   __vector__::internal_iterator_construct__(_Input first, _Input last, const allocator_type& alloc) {
 	LOG_C_("internal_range constructor : input iterator", B_COLOR_YELLOW);
 	internal_assign__(first, last, alloc);
 }
+
 __template__ __template_forward__
 __return__() typename ft::void_t<
-  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
+  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 						  _Forward >::type >::type
   __vector__::internal_iterator_construct__(_Forward first, _Forward last, const allocator_type& alloc) {
 	LOG_C_("internal_range constructor : forward iterator", B_COLOR_YELLOW);
-	const size_type n = ft::distance(first, last);
+	const difference_type n = ft::distance(first, last);
 	this->allocate_(n);
-	internal_assign__(first, last, alloc, n);
+	internal_assign__(first, last, alloc);
 }
+
 __template__ __template_input__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-							!ft::has_iterator_category_convertible_to< _Input, ft::forward_iterator_tag >::value,
+							!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 						  _Input >::type >::type __vector__::internal_assign__(_Input				 first,
 																			   _Input				 last,
 																			   const allocator_type& alloc) {
@@ -716,15 +732,16 @@ __return__() typename ft::void_t<
 		}
 	}
 }
+
 __template__ __template_forward__
 __return__() typename ft::void_t<
-  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, ft::forward_iterator_tag >::value,
+  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 						  _Forward >::type >::type __vector__::internal_assign__(_Forward			   first,
 																				 _Forward			   last,
-																				 const allocator_type& alloc,
-																				 size_type			   n) {
+																				 const allocator_type& alloc) {
 	LOG_C_("internal_assign : forward iterator", B_COLOR_YELLOW);
-	if (n > capacity()) {
+	const difference_type n = ft::distance(first, last);
+	if (n > static_cast< difference_type >(capacity())) {
 		vector temp(first, last, alloc);
 		this->swap(temp);
 	} else {

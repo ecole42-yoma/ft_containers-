@@ -89,16 +89,24 @@ struct yoma_assert< true > {
 /**
  * * [ own log ] -----------------------------------------------------------------------------------
  */
-#define LOG_(context)		   log_(__func__, context)
-#define LOG_C_(context, color) log_(__func__, context, color)
+#define LOG_(context)		   log_(context, __func__, __FILE__, __LINE__)
+#define LOG_C_(context, color) log_(context, __func__, __FILE__, __LINE__, color)
 
 inline void
-log_(const std::string& title, const char* context, const char* c1 = B_COLOR_GREEN, const char* c2 = COLOR_YELLOW) {
+log_(const char*		context,
+	 const std::string& func,
+	 const std::string& file,
+	 const int			line,
+	 const char*		c1 = B_COLOR_GREEN,
+	 const char*		c2 = COLOR_YELLOW) {
 #ifdef LOG
-	std::cout << c1 << title << COLOR_RESET << ": " << c2 << context << COLOR_RESET << std::endl;
+	std::cout << file << ":" << line << ": " << c1 << func << COLOR_RESET << "\t" << c2 << context << COLOR_RESET
+			  << std::endl;
 #else
-	(void)title;
 	(void)context;
+	(void)func;
+	(void)file;
+	(void)line;
 	(void)c1;
 	(void)c2;
 #endif

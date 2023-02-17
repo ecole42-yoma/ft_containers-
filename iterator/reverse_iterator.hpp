@@ -49,7 +49,7 @@ __template_iter__ struct reverse_iterator
 	 * * [ forward iterator requirements ] ---------------------------------------------------------
 	 */
 	reference		  operator*() const _es_noexcept_ { return *(--__itr); }
-	pointer			  operator->() const _es_noexcept_ { return &(*__itr); }
+	pointer			  operator->() const _es_noexcept_ { return *__itr; }
 	reverse_iterator& operator++() _es_noexcept_ {
 		--__itr;
 		return *this;
@@ -63,7 +63,7 @@ __template_iter__ struct reverse_iterator
 	/**
 	 * * [ bidirectional iterator requirements ] ---------------------------------------------------
 	 */
-	reverse_iterator operator--() _es_noexcept_ {
+	reverse_iterator& operator--() _es_noexcept_ {
 		++__itr;
 		return *this;
 	}
@@ -76,11 +76,17 @@ __template_iter__ struct reverse_iterator
 	/**
 	 * * [ random access iterator requirements ] ---------------------------------------------------
 	 */
-	reference		 operator[](difference_type n) const _es_noexcept_ { return *(__itr + n); }
-	reverse_iterator operator+(difference_type n) const _es_noexcept_ { return reverse_iterator(base() - n); }
-	reverse_iterator operator-(difference_type n) const _es_noexcept_ { return reverse_iterator(base() + n); }
-	reverse_iterator operator+=(difference_type n) _es_noexcept_ { return base() += n; }
-	reverse_iterator operator-=(difference_type n) _es_noexcept_ { return base() += (-n); }
+	reference		  operator[](difference_type n) const _es_noexcept_ { return *(*this + n); }
+	reverse_iterator  operator+(difference_type n) const _es_noexcept_ { return reverse_iterator(__itr - n); }
+	reverse_iterator  operator-(difference_type n) const _es_noexcept_ { return reverse_iterator(__itr + n); }
+	reverse_iterator& operator+=(difference_type n) _es_noexcept_ {
+		__itr -= n;
+		return *this;
+	}
+	reverse_iterator& operator-=(difference_type n) _es_noexcept_ {
+		__itr += n;
+		return *this;
+	}
 
 	// inline difference_type
 	// operator-(const iterator_type& i) const _es_noexcept_ { return this->base() - i.base(); }

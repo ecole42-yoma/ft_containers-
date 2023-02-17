@@ -7,7 +7,6 @@
 #include "has_iterator_x.hpp"
 #include "is_iterator_x.hpp"
 #include "iterator.hpp"
-#include "iterator_tag.hpp"
 
 #include <cstddef>
 
@@ -28,21 +27,24 @@ struct __iterator_traits_work< _Iter, true > {
 	typedef typename _Iter::iterator_category iterator_category;
 };
 
+template< typename _Iter, bool >
+struct __iterator_traits {};
+
 template< typename _Iter >
-struct iterator_traits
-  : __iterator_traits_work< _Iter,
-							has_iterator_typedefs< _Iter >::value &&
-							  (ft::is_convertible< typename _Iter::iterator_category, input_iterator_tag >::value ||
-							   ft::is_convertible< typename _Iter::iterator_category, output_iterator_tag >::value) > {
-};
+struct __iterator_traits< _Iter, true >
+  : __iterator_traits_work< _Iter, ft::__has_iterator_category< _Iter >::value > {};
+
+template< typename _Iter >
+struct iterator_traits : __iterator_traits< _Iter, ft::has_iterator_typedefs< _Iter >::value > {};
 
 template< typename _Iter >
 struct iterator_traits< _Iter* > {
-	typedef ptrdiff_t				   difference_type;
-	typedef _Iter					   value_type;
-	typedef value_type*				   pointer;
-	typedef value_type&				   reference;
-	typedef random_access_iterator_tag iterator_category;
+	// typedef typename ft::remove_cv< _Iter >::type value_type;
+	typedef ptrdiff_t						difference_type;
+	typedef _Iter							value_type;
+	typedef value_type*						pointer;
+	typedef value_type&						reference;
+	typedef std::random_access_iterator_tag iterator_category;
 };
 
 // template< typename _Iter > // XXX: need to check if this is needed
@@ -53,6 +55,5 @@ struct iterator_traits< _Iter* > {
 // 	typedef const value_type&		   reference;
 // 	typedef random_access_iterator_tag iterator_category;
 // };
-
 }
 #endif

@@ -44,7 +44,7 @@ __template_iter__ class _wrap_iter {
 	 * * [ forward iterator requirements ] ---------------------------------------------------------
 	 */
 	reference	operator*() const _es_noexcept_ { return *__itr; }
-	pointer		operator->() const _es_noexcept_ { return &(*__itr); }
+	pointer		operator->() const _es_noexcept_ { return __itr; }
 	_wrap_iter& operator++() _es_noexcept_ {
 		++__itr;
 		return *this;
@@ -58,7 +58,7 @@ __template_iter__ class _wrap_iter {
 	/**
 	 * * [ bidirectional iterator requirements ] ---------------------------------------------------
 	 */
-	_wrap_iter operator--() _es_noexcept_ {
+	_wrap_iter& operator--() _es_noexcept_ {
 		--__itr;
 		return *this;
 	}
@@ -72,10 +72,20 @@ __template_iter__ class _wrap_iter {
 	 * * [ random access iterator requirements ] ---------------------------------------------------
 	 */
 	reference  operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
-	_wrap_iter operator+(difference_type n) const _es_noexcept_ { return _wrap_iter(base() + n); }
-	_wrap_iter operator-(difference_type n) const _es_noexcept_ { return _wrap_iter(base() - n); }
-	_wrap_iter operator+=(difference_type n) _es_noexcept_ { return base() += n; }
-	_wrap_iter operator-=(difference_type n) _es_noexcept_ { return base() += (-n); }
+	_wrap_iter operator+(difference_type n) const _es_noexcept_ {
+		_wrap_iter temp(*this);
+		temp += n;
+		return temp;
+	}
+	_wrap_iter	operator-(difference_type n) const _es_noexcept_ { return *this + (-n); }
+	_wrap_iter& operator+=(difference_type n) _es_noexcept_ {
+		__itr += n;
+		return *this;
+	}
+	_wrap_iter& operator-=(difference_type n) _es_noexcept_ {
+		*this += -n;
+		return *this;
+	}
 
 	// inline difference_type
 	// operator-(const iterator_type& i) const _es_noexcept_ { return this->base() - i.base(); }
