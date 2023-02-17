@@ -5,20 +5,14 @@
 
 #include "vector.hpp"
 
-#define __stack__	 stack< _Tp, _Container >
-#define __template__ template< typename _Tp, typename _Container >
+#define __stack__		stack< _Tp, _Container >
+#define __template__	template< typename _Tp, typename _Container >
+#define __stack_in__	stack< _T, _Cont >
+#define __template_in__ template< typename _T, typename _Cont >
 
 namespace ft {
 
 __template__ class stack;
-
-__template__
-__return__(bool)
-operator==(const __stack__& x, const __stack__& y);
-
-__template__
-__return__(bool)
-operator<(const __stack__& x, const __stack__& y);
 
 /**
  * * [ stack container ] ---------------------------------------------------------------------------
@@ -82,6 +76,9 @@ class stack {
 	void push(const value_type& x) _es_strong_ _ub_ { __c.push_back(x); }
 	void pop() _es_strong_ _ub_ { __c.pop_back(); }
 
+	__template_in__ friend bool operator==(const __stack_in__& x, const __stack_in__& y);
+	__template_in__ friend bool operator<(const __stack_in__& x, const __stack_in__& y);
+
 }; /* class stack */
 
 /**
@@ -89,39 +86,41 @@ class stack {
  */
 __template__
 __return__() inline bool
-operator==(const __stack__& __x, const __stack__& __y) {
-	return __x.c == __y.c;
+operator==(const __stack__& lhs, const __stack__& rhs) {
+	return lhs.c == rhs.c;
 }
 
 __template__
 __return__() inline bool
-operator<(const __stack__& __x, const __stack__& __y) {
-	return __x.c < __y.c;
+operator<(const __stack__& lhs, const __stack__& rhs) {
+	return lhs.c < rhs.c;
 }
 
-__template__ inline _LIBCPP_INLINE_VISIBILITY bool
-operator!=(const __stack__& __x, const __stack__& __y) {
-	return !(__x == __y);
+__template__ inline bool
+operator!=(const __stack__& lhs, const __stack__& rhs) {
+	return !(lhs == rhs);
 }
 
-__template__ inline _LIBCPP_INLINE_VISIBILITY bool
-operator>(const __stack__& __x, const __stack__& __y) {
-	return __y < __x;
+__template__ inline bool
+operator>(const __stack__& lhs, const __stack__& rhs) {
+	return rhs < lhs;
 }
 
-__template__ inline _LIBCPP_INLINE_VISIBILITY bool
-operator>=(const __stack__& __x, const __stack__& __y) {
-	return !(__x < __y);
+__template__ inline bool
+operator>=(const __stack__& lhs, const __stack__& rhs) {
+	return !(lhs < rhs);
 }
 
-__template__ inline _LIBCPP_INLINE_VISIBILITY bool
-operator<=(const __stack__& __x, const __stack__& __y) {
-	return !(__y < __x);
+__template__ inline bool
+operator<=(const __stack__& lhs, const __stack__& rhs) {
+	return !(rhs < lhs);
 }
 
 } /* ft namespace */
 
 #undef __stack__
 #undef __template__
+#undef __stack_in__
+#undef __template_in__
 
 #endif
