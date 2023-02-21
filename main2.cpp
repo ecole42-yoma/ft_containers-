@@ -18,6 +18,7 @@
 #include "type/is_same.hpp"
 #include "type/remove_cv.hpp"
 #include "util/_core_utils.hpp"
+#include <map>
 #include <stack>
 #include <string>
 
@@ -169,5 +170,6 @@ main(int argc, char** argv) {
 	(void)argv;
 	main2();
 	std::make_pair(0, 0);
+	std::map< int, int > m;
 	std::pair< int, int >(0, 0)
 }
