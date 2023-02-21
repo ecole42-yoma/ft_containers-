@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <deque>
+#include <functional>
 #include <iostream>
 #include <iterator>
 #include <memory>
@@ -158,6 +159,7 @@ main2() {
 void
 check_leaks() {
 	system("leaks ft_containers");
+	std::less< int > cmp;
 }
 
 int
@@ -166,4 +168,6 @@ main(int argc, char** argv) {
 		atexit(check_leaks);
 	(void)argv;
 	main2();
+	std::make_pair(0, 0);
+	std::pair< int, int >(0, 0)
 }
