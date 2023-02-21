@@ -335,21 +335,21 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	private:
 	__template_input__ typename ft::void_t<
 	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-								!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
+								!ft::is_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 							  _Input >::type >::type
 	internal_iterator_construct__(_Input first, _Input last, const allocator_type& alloc);
 	__template_forward__ typename ft::void_t<
-	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
+	  typename ft::enable_if< ft::is_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 							  _Forward >::type >::type
 	internal_iterator_construct__(_Forward first, _Forward last, const allocator_type& alloc);
 
 	__template_input__ typename ft::void_t<
 	  typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-								!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
+								!ft::is_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 							  _Input >::type >::type
 	internal_assign__(_Input first, _Input last, const allocator_type& alloc);
 	__template_forward__ typename ft::void_t<
-	  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
+	  typename ft::enable_if< ft::is_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 							  _Forward >::type >::type
 	internal_assign__(_Forward first, _Forward last, const allocator_type& alloc);
 
@@ -695,7 +695,7 @@ __return__() typename __vector__::size_type __vector__::recommend_size__(size_ty
 __template__ __template_input__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-							!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
+							!ft::is_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 						  _Input >::type >::type
   __vector__::internal_iterator_construct__(_Input first, _Input last, const allocator_type& alloc) {
 	LOG_C_("internal_range constructor : input iterator", B_COLOR_YELLOW);
@@ -704,7 +704,7 @@ __return__() typename ft::void_t<
 
 __template__ __template_forward__
 __return__() typename ft::void_t<
-  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
+  typename ft::enable_if< ft::is_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 						  _Forward >::type >::type
   __vector__::internal_iterator_construct__(_Forward first, _Forward last, const allocator_type& alloc) {
 	LOG_C_("internal_range constructor : forward iterator", B_COLOR_YELLOW);
@@ -716,13 +716,13 @@ __return__() typename ft::void_t<
 __template__ __template_input__
 __return__() typename ft::void_t<
   typename ft::enable_if< ft::is_iterator_of_input< _Input >::value &&
-							!ft::has_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
+							!ft::is_iterator_category_convertible_to< _Input, std::forward_iterator_tag >::value,
 						  _Input >::type >::type __vector__::internal_assign__(_Input				 first,
 																			   _Input				 last,
 																			   const allocator_type& alloc) {
 	LOG_C_("internal_assign : input iterator", B_COLOR_YELLOW);
-	this->__alloc	  = alloc;
-	_Input copy_begin = this->__begin;
+	this->__alloc	   = alloc;
+	pointer copy_begin = this->__begin;
 	for (; copy_begin != this->__end && first != last; ++copy_begin, ++first) {
 		*copy_begin = *first;
 	}
@@ -737,7 +737,7 @@ __return__() typename ft::void_t<
 
 __template__ __template_forward__
 __return__() typename ft::void_t<
-  typename ft::enable_if< ft::has_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
+  typename ft::enable_if< ft::is_iterator_category_convertible_to< _Forward, std::forward_iterator_tag >::value,
 						  _Forward >::type >::type __vector__::internal_assign__(_Forward			   first,
 																				 _Forward			   last,
 																				 const allocator_type& alloc) {
@@ -787,16 +787,12 @@ operator>=(const ft::vector< _Tp, _Alloc >& lhs, const ft::vector< _Tp, _Alloc >
 	return !(lhs < rhs);
 }
 
-} /* namespace ft */
-
-namespace std {
-
 __template__
 __return__() inline void swap(ft::__vector__& lhs, ft::__vector__& rhs) {
 	lhs.swap(rhs);
 }
 
-}
+} /* namespace ft */
 
 #undef __vector__
 #undef __vector_base__

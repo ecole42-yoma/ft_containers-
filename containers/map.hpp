@@ -13,6 +13,7 @@
 #include "../type/allocator_traits.hpp"
 
 #include "../util/_core_utils.hpp"
+#include "../util/utility.hpp"
 #endif
 
 #include <functional>
@@ -34,7 +35,10 @@ template< class _Key,
 		  class _Tp,
 		  class _Comp  = std::less< _Key >,
 		  class _Alloc = std::allocator< ft::pair< const _Key, _Tp > > >
-class map {};
+class map {
+
+	//
+};
 
 } /*
 namespace ft*/

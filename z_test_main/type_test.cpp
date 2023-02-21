@@ -45,13 +45,13 @@ main2() {
 	std::cout << tem.size() << std::endl;
 	std::cout << tem.capacity() << std::endl;
 	LOG_("test");
-	if (ft::has_iterator_category_convertible_to< ft::vector< int >::iterator, ft::bidirectional_iterator_tag >::value) {
+	if (ft::is_iterator_category_convertible_to< ft::vector< int >::iterator, ft::bidirectional_iterator_tag >::value) {
 		std::cout << "conv" << std::endl;
 	} else {
 		std::cout << "not conv" << std::endl;
 	}
 
-	if (ft::has_iterator_category_convertible_to< test_ite, ft::random_access_iterator_tag >::value) {
+	if (ft::is_iterator_category_convertible_to< test_ite, ft::random_access_iterator_tag >::value) {
 		std::cout << "conv" << std::endl;
 	} else {
 		std::cout << "not conv" << std::endl;

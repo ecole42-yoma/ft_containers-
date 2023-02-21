@@ -3,12 +3,10 @@
 #define __HAS_ITERATOR_X_HPP__
 
 #include "../type/_type_traits.hpp"
+
 #include <cstddef>
 
 namespace ft {
-
-template< typename _Iter >
-struct iterator_traits;
 
 /**
  * * [ has iterator typedefs ] ---------------------------------------------------------------------
@@ -70,18 +68,6 @@ struct __has_iterator_category< _Tp, false > : ft::false_type {};
 template< typename _Tp >
 struct has_iterator_category : __has_iterator_category< _Tp > {};
 
-/**
- * * [ has iterator category convertible to] -------------------------------------------------------
- */
-template< typename _Tp, typename _Up, bool = has_iterator_category< _Tp >::value >
-struct __has_iterator_category_convertible_to : ft::is_convertible< typename _Tp::iterator_category, _Up > {};
-//   : ft::is_convertible< typename ft::iterator_traits< _Tp >::iterator_category, _Up > {};
-
-template< typename _Tp, typename _Up >
-struct __has_iterator_category_convertible_to< _Tp, _Up, false > : ft::false_type {};
-
-template< typename _Tp, typename _Up >
-struct has_iterator_category_convertible_to : __has_iterator_category_convertible_to< _Tp, _Up > {};
-
 }
+
 #endif
