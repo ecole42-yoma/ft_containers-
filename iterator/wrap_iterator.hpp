@@ -15,12 +15,13 @@ namespace ft {
 
 __template_iter__ class _wrap_iter {
 	public:
-	typedef _Iter															 iterator_type;
-	typedef typename ft::iterator_traits< iterator_type >::iterator_category iterator_category;
-	typedef typename ft::iterator_traits< iterator_type >::value_type		 value_type;
-	typedef typename ft::iterator_traits< iterator_type >::difference_type	 difference_type;
-	typedef typename ft::iterator_traits< iterator_type >::pointer			 pointer;
-	typedef typename ft::iterator_traits< iterator_type >::reference		 reference;
+	typedef _Iter								 iterator_type;
+	typedef ft::iterator_traits< iterator_type > traits_;
+	typedef typename traits_::iterator_category	 iterator_category;
+	typedef typename traits_::value_type		 value_type;
+	typedef typename traits_::difference_type	 difference_type;
+	typedef typename traits_::pointer			 pointer;
+	typedef typename traits_::reference			 reference;
 
 	private:
 	iterator_type __itr;
@@ -93,6 +94,8 @@ __template_iter__ class _wrap_iter {
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
+	template< typename _Up >
+	friend class _wrap_iter;
 	template< typename _Tp, typename _Alloc >
 	friend class vector;
 	template< class _CharT, class _Traits, class _Alloc >
@@ -173,17 +176,17 @@ operator<=(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es
 	return !(rhs < lhs);
 }
 
+__template_iter2__
+__return__() inline typename _wrap_iter< _Iter1 >::difference_type
+operator-(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
+	return lhs.base() - rhs.base();
+}
+
 __template_iter1__
-__return__() _wrap_iter< _Iter1 >
+__return__() inline _wrap_iter< _Iter1 >
 operator+(typename _wrap_iter< _Iter1 >::difference_type n, _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
 	rhs += n;
 	return rhs;
-}
-
-__template_iter2__
-__return__() typename _wrap_iter< _Iter1 >::difference_type
-operator-(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_noexcept_ {
-	return lhs.base() - rhs.base();
 }
 
 } // namespace ft

@@ -168,6 +168,7 @@ main(int argc, char** argv) {
 		atexit(check_leaks);
 	(void)argv;
 	main2();
+	std::distance();
 	// std::make_pair(0, 0);
 	// std::map< int, int > m;
 	// std::pair< int, int >(0, 0)

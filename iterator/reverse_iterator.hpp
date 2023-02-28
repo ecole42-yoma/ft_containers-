@@ -11,7 +11,7 @@
 
 namespace ft {
 
-__template_iter__ struct reverse_iterator
+__template_iter__ class reverse_iterator
   : public ft::iterator< typename ft::iterator_traits< _Iter >::iterator_category,
 						 typename ft::iterator_traits< _Iter >::value_type,
 						 typename ft::iterator_traits< _Iter >::difference_type,
@@ -96,6 +96,8 @@ __template_iter__ struct reverse_iterator
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:
+	template< typename _Up >
+	friend class reverse_iterator;
 	template< typename _Tp, typename _Alloc >
 	friend class vector;
 	template< class _CharT, class _Traits, class _Alloc >
@@ -142,13 +144,13 @@ operator<=(const reverse_iterator< _Iter1 >& lhs, const reverse_iterator< _Iter2
 }
 
 __template_iter1__
-__return__() reverse_iterator< _Iter1 >
+__return__() inline reverse_iterator< _Iter1 >
 operator+(typename reverse_iterator< _Iter1 >::difference_type n, const reverse_iterator< _Iter1 >& rhs) _es_noexcept_ {
 	return reverse_iterator< _Iter1 >(rhs.base() - n);
 }
 
 __template_iter2__
-__return__() typename reverse_iterator< _Iter1 >::difference_type
+__return__() inline typename reverse_iterator< _Iter1 >::difference_type
 operator-(const reverse_iterator< _Iter1 >& lhs, const reverse_iterator< _Iter2 >& rhs) _es_noexcept_ {
 	return rhs.base() - lhs.base();
 }

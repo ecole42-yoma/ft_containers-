@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 
@@ -148,7 +149,7 @@ __return__(void) __vector_base__::reserve_(size_type n) _es_strong_ {
 	for (size_type i = 0; i < old_size; ++i) {
 		__alloc.construct(temp.__begin + i, __begin[i]);
 	}
-	temp.__end = temp.__begin + size_();
+	temp.__end = temp.__begin + old_size;
 	this->swap_data_(temp);
 }
 
@@ -233,8 +234,8 @@ class vector : private in_vector_base< _Tp, _Alloc > {
 	typedef typename __base::const_pointer		   const_pointer;
 	typedef typename __base::reference			   reference;
 	typedef typename __base::const_reference	   const_reference;
-	typedef _wrap_iter< pointer >				   iterator;
-	typedef _wrap_iter< const_pointer >			   const_iterator;
+	typedef ft::_wrap_iter< pointer >			   iterator;
+	typedef ft::_wrap_iter< const_pointer >		   const_iterator;
 	typedef ft::reverse_iterator< iterator >	   reverse_iterator;
 	typedef ft::reverse_iterator< const_iterator > const_reverse_iterator;
 
@@ -405,10 +406,7 @@ __template__
 __vector__::vector(const vector& from) _es_strong_ _ub_ // copy
   try : __base(from.size(), from.__alloc) {
 	LOG_("copy constructor");
-	if (from.size() > 0) {
-		std::copy(from.begin(), from.end(), begin());
-		this->__end = this->__begin + from.size();
-	}
+	*this = from;
 } catch (const std::exception& e) {
 	std::cerr << e.what() << std::endl;
 	throw;
@@ -563,7 +561,8 @@ __template__
 __return__()
   typename __vector__::iterator __vector__::insert(iterator position, size_type n, const_reference x) _es_strong_ _ub_ {
 	LOG_("vector: insert (fill)");
-	difference_type offset = ft::distance(begin(), position);
+	const difference_type offset = ft::distance(begin(), position);
+
 	if (n > 0) {
 		if (n > this->remain_size_()) {
 			vector temp(size() + n);
@@ -587,11 +586,13 @@ __return__() typename __vector__::iterator
 					 typename ft::enable_if< ft::is_iterator< _Iter >::value, _Iter >::type first,
 					 _Iter																	last) _es_strong_ _ub_ {
 	LOG_("vector: insert (range)");
-	difference_type offset = ft::distance(begin(), position);
-	difference_type n	   = ft::distance(first, last);
+	const difference_type offset = ft::distance(begin(), position);
+	const difference_type n		 = ft::distance(first, last);
+
 	if (n > 0) {
 		if (static_cast< size_type >(n) > this->remain_size_()) {
-			vector temp(size() + n);
+			__vector__ temp(size() + n);
+
 			std::uninitialized_copy(this->__begin, this->__begin + offset, temp.begin());
 			std::uninitialized_copy(first, last, temp.begin() + offset);
 			std::uninitialized_copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
@@ -727,6 +728,7 @@ __return__() typename ft::void_t<
 	LOG_C_("internal_assign : input iterator", B_COLOR_YELLOW);
 	this->__alloc	   = alloc;
 	pointer copy_begin = this->__begin;
+
 	for (; copy_begin != this->__end && first != last; ++copy_begin, ++first) {
 		*copy_begin = *first;
 	}
@@ -747,11 +749,14 @@ __return__() typename ft::void_t<
 																				 const allocator_type& alloc) {
 	LOG_C_("internal_assign : forward iterator", B_COLOR_YELLOW);
 	const difference_type n = ft::distance(first, last);
+
 	if (n > static_cast< difference_type >(capacity())) {
 		vector temp(first, last, alloc);
+
 		this->swap(temp);
 	} else {
 		this->destruct_at_end_(this->__begin);
+		// std::uninitialized_copy(first, last, this->__begin);
 		for (difference_type i = 0; i < n; ++i, ++first) {
 			this->__alloc.construct(this->__begin + i, *first);
 		}
