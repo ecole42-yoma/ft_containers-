@@ -80,6 +80,7 @@ class in_vector_base {
 	void			 allocate_(size_type n) throw(std::length_error) _es_strong_;
 	void			 reserve_(size_type n) _es_strong_;
 	void			 deallocate_() _es_noexcept_;
+	void			 destruct_at_end_() _es_noexcept_;
 	void			 destruct_at_end_(pointer new_last) _es_noexcept_;
 	void			 construct_at_end_(size_type n, const_reference value = value_type()) _es_noexcept_;
 	inline size_type size_() const _es_noexcept_ { return static_cast< size_type >(__end - __begin); }
@@ -173,13 +174,17 @@ __return__(void) __vector_base__::construct_at_end_(size_type n, const_reference
 }
 
 __template__
+__return__(void) __vector_base__::destruct_at_end_() _es_noexcept_ {
+	LOG_C_("in_vector_base", B_COLOR_PURPLE);
+	__alloc.destroy(--__end);
+}
+
+__template__
 __return__(void) __vector_base__::destruct_at_end_(pointer new_last) _es_noexcept_ {
 	LOG_C_("in_vector_base", B_COLOR_PURPLE);
-	pointer soon_to_be_end = __end;
-	while (new_last != soon_to_be_end) {
-		__alloc.destroy(--soon_to_be_end);
+	while (new_last != __end) {
+		__alloc.destroy(--__end);
 	}
-	__end = new_last;
 }
 
 __template__
@@ -557,7 +562,7 @@ __template__
 __return__(void) __vector__::pop_back() _es_noexcept_ _ub_ {
 	LOG_("vector: pop_back");
 	assert_((!empty()), "vector : pop_back : called for empty vector");
-	this->destruct_at_end_(this->__end - 1);
+	this->destruct_at_end_();
 }
 
 __template__
