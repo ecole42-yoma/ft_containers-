@@ -144,7 +144,11 @@ __template__
 __return__(void) __vector_base__::reserve_(size_type n) _es_strong_ {
 	LOG_("in_vector_base");
 	__vector_base__ temp(n, __alloc);
-	temp.__end = std::uninitialized_copy(this->__begin, this->__end, temp.__begin);
+	const size_type old_size = size_();
+	for (size_type i = 0; i < old_size; ++i) {
+		__alloc.construct(temp.__begin + i, __begin[i]);
+	}
+	temp.__end = temp.__begin + size_();
 	this->swap_data_(temp);
 }
 
@@ -748,7 +752,10 @@ __return__() typename ft::void_t<
 		this->swap(temp);
 	} else {
 		this->destruct_at_end_(this->__begin);
-		this->__end = std::uninitialized_copy(first, last, this->__begin);
+		for (difference_type i = 0; i < n; ++i, ++first) {
+			this->__alloc.construct(this->__begin + i, *first);
+		}
+		this->__end = this->__begin + n;
 	}
 	this->__alloc = alloc;
 }
