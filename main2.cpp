@@ -146,14 +146,22 @@ std::string b_string[64] = {
 	"xdkgKj1dEoJ6zuVhkvvo", "olIewtUEvXJgs1lB9bCn", "dTsPDS0x2uXtcgOIJHb8", "DYvJ2phLppGNZKboTBrd",
 	"DjNFMtt9PxkzqvWBHI6j", "1Z3YkeTFlPniKnzFhzgu", "76XqQg6hqMf5IXxKPOEs", "gzaapTWW7i9EZjjzLeK6"
 };
+
+#include <sstream>
+
 void
 main2() {
-	ft::vector< std::string > v;
+	std::istringstream				 str("1 2 3 4 5 6 7 8 9 0 A B C D E F");
+	std::istreambuf_iterator< char > it(str), end;
+	// std::string			  str("1 2 3 4 5 6 7 8 9 0 A B C D E F");
+	// std::string::iterator it(str.begin()), end(str.end());
 
-	std::cout << "hi" << std::endl;
-	ft::vector< std::string >::iterator it = v.insert(v.end(), b_string[54]);
+	ft::vector< char > v(2, 'U');
+	std::cout << ft::distance(v.begin(), v.end()) << std::endl;
+	v.insert(v.end(), it, end);
 
-	std::cout << "hi" << std::endl;
+	for (size_t i = 0; i < v.size(); ++i)
+		std::cout << v[i] << std::endl;
 }
 
 void
@@ -168,7 +176,6 @@ main(int argc, char** argv) {
 		atexit(check_leaks);
 	(void)argv;
 	main2();
-	std::distance();
 	// std::make_pair(0, 0);
 	// std::map< int, int > m;
 	// std::pair< int, int >(0, 0)
