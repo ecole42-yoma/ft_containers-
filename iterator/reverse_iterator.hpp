@@ -90,9 +90,6 @@ __template_iter__ class reverse_iterator
 		return *this;
 	}
 
-	// inline difference_type
-	// operator-(const iterator_type& i) const _es_noexcept_ { return this->base() - i.base(); }
-
 	inline iterator_type base() const _es_noexcept_ { return __itr; }
 
 	private:

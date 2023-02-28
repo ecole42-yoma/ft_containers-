@@ -75,13 +75,9 @@ __template_iter__ class _wrap_iter {
 	/**
 	 * * [ random access iterator requirements ] ---------------------------------------------------
 	 */
-	reference  operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
-	_wrap_iter operator+(difference_type n) const _es_noexcept_ {
-		_wrap_iter temp(*this);
-		temp += n;
-		return temp;
-	}
-	_wrap_iter	operator-(difference_type n) const _es_noexcept_ { return *this + (-n); }
+	reference	operator[](difference_type n) const _es_noexcept_ { return __itr[n]; }
+	_wrap_iter	operator+(difference_type n) const _es_noexcept_ { return _wrap_iter(__itr + n); }
+	_wrap_iter	operator-(difference_type n) const _es_noexcept_ { return _wrap_iter(__itr - n); }
 	_wrap_iter& operator+=(difference_type n) _es_noexcept_ {
 		__itr += n;
 		return *this;
@@ -184,7 +180,7 @@ operator-(const _wrap_iter< _Iter1 >& lhs, const _wrap_iter< _Iter2 >& rhs) _es_
 
 __template_iter1__
 __return__() inline _wrap_iter< _Iter1 >
-operator+(typename _wrap_iter< _Iter1 >::difference_type n, _wrap_iter< _Iter1 >& rhs) _es_noexcept_ {
+operator+(typename _wrap_iter< _Iter1 >::difference_type n, _wrap_iter< _Iter1 > rhs) _es_noexcept_ {
 	rhs += n;
 	return rhs;
 }
