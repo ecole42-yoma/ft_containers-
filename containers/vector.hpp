@@ -521,17 +521,15 @@ __vector__::assign(size_type n, const_reference value) _es_basic_ _ub_ {
 	LOG_("vector: assign (fill)");
 	if (n > capacity()) {
 		vector temp(n, value);
-		this->swap_data_(temp);
+		this->swap(temp);
 	} else if (n > size()) {
 		std::fill(this->__begin, this->__end, value);
 		const size_type remain = n - size();
-		std::uninitialized_fill_n(this->__end, remain, value);
-		std::advance(this->__end, remain);
+		this->construct_at_end_(remain, value);
 	} else {
 		std::fill_n(this->__begin, n, value);
 		const size_type remain = size() - n;
-		std::advance(this->__end, -remain);
-		this->destruct_at_end_(this->__end);
+		this->destruct_at_end_(this->__end - remain);
 	}
 }
 
@@ -565,14 +563,15 @@ __return__()
 	if (n > 0) {
 		if (n > this->remain_size_()) {
 			vector temp(size() + n);
-			std::copy(this->__begin, this->__begin + offset, temp.begin());
-			std::fill_n(temp.begin() + offset, n, x);
-			std::copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
-			this->swap_data_(temp);
+			std::uninitialized_copy(this->__begin, this->__begin + offset, temp.begin());
+			std::uninitialized_fill_n(temp.begin() + offset, n, x);
+			std::uninitialized_copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
+			temp.__end = temp.__begin + size() + n;
+			this->swap(temp);
 		} else {
-			std::copy_backward(this->__begin + offset, this->__end, this->__end + n);
+			this->construct_at_end_(n, x);
+			std::copy_backward(this->__begin + offset, this->__end - n, this->__end);
 			std::fill_n(this->__begin + offset, n, x);
-			std::advance(this->__end, n);
 		}
 	}
 	return make_iter__(this->__begin + offset);
@@ -589,14 +588,15 @@ __return__() typename __vector__::iterator
 	if (n > 0) {
 		if (static_cast< size_type >(n) > this->remain_size_()) {
 			vector temp(size() + n);
-			std::copy(this->__begin, this->__begin + offset, temp.begin());
-			std::copy(first, last, temp.begin() + offset);
-			std::copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
+			std::uninitialized_copy(this->__begin, this->__begin + offset, temp.begin());
+			std::uninitialized_copy(first, last, temp.begin() + offset);
+			std::uninitialized_copy(this->__begin + offset, this->__end, temp.begin() + offset + n);
+			temp.__end = temp.__begin + size() + n;
 			this->swap(temp);
 		} else {
+			this->construct_at_end_(n, value_type());
 			std::copy_backward(this->__begin + offset, this->__end, this->__end + n);
 			std::copy(first, last, this->__begin + offset);
-			std::advance(this->__end, n);
 		}
 	}
 	return make_iter__(this->__begin + offset);

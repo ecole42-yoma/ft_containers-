@@ -9,7 +9,9 @@ ifdef TEST
 	SRC 	=	main2.cpp
 else
 	SRC 	=	main.cpp
+	CXX_WARN_FLAGS	=	all extra error
 	CXXFLAGS	+= -D BASIC
+	CXXFLAGS	+=	$(addprefix -W, $(CXX_WARN_FLAGS))
 endif
 
 SRC_DIR		=
@@ -31,11 +33,9 @@ OBJ			=	$(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 RM			=	rm -f
 
 CXX			=	c++
-CXX_WARN_FLAGS	=	all extra error
 CXX_STD_FLAGS	=	c++98
-CXXFLAGS	+=	$(addprefix -W, $(CXX_WARN_FLAGS))
-CXXFLAGS	+= -pedantic
 CXXFLAGS	+=	$(addprefix -std=, $(CXX_STD_FLAGS))
+CXXFLAGS	+= -pedantic
 
 FT_VERSION	=	03
 ifdef FT_VERSION
