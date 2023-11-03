@@ -3,3 +3,11 @@
 
 * The standard C++ containers have all a specific usage. 
 * To make sure you understand them, let’s re-implement them!
+
+<br>
+
+# Features
+- C++ 98/03 and plus [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae)
+- Vector, Stack (done)
+- Map, Set (undone)
+- Iterator
