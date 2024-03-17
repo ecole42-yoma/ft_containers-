@@ -7,7 +7,7 @@
 <br>
 
 # Features
-- C++ 98/03 and plus [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae)
-- Vector, Stack (done)
-- Map, Set (undone)
+- C++ 98/03 and [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae)
+- [x] Vector, Stack
+- [ ] Map, Set
 - Iterator
